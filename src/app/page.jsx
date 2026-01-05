@@ -339,16 +339,16 @@ const Page = () => {
         </motion.div>
       </section>
       {/* 1.5 Partners Section */}
-      <section className="py-10 bg-white border-b border-gray-100">
+      <section className="py-10 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">
+          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
             Trusted by working parents at
           </p>
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
             {partners.map((partner, i) => (
               <span
                 key={i}
-                className="text-2xl font-bold text-gray-400 hover:text-rose-600 transition-colors cursor-default"
+                className="text-2xl font-bold text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-500 transition-colors cursor-default"
               >
                 {partner}
               </span>
@@ -357,7 +357,7 @@ const Page = () => {
         </div>
       </section>
       {/* 2. Stats Section */}
-      <section className="py-12 bg-white border-y border-gray-100">
+      <section className="py-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
@@ -372,10 +372,10 @@ const Page = () => {
                 variants={scaleIn}
                 className="text-center group hover:-translate-y-1 transition-transform duration-300"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600 mb-4 group-hover:scale-110 transition-transform">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 mb-4 group-hover:scale-110 transition-transform">
                   <stat.icon className="w-6 h-6" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
                   <CountUp
                     end={stat.number}
                     suffix={stat.suffix}
@@ -385,7 +385,7 @@ const Page = () => {
                     scrollSpyOnce
                   />
                 </div>
-                <div className="text-sm text-gray-500 font-medium">
+                <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                   {stat.label}
                 </div>
               </motion.div>
@@ -394,7 +394,7 @@ const Page = () => {
         </div>
       </section>
       {/* 3. About Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -403,11 +403,11 @@ const Page = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
                 Our Mission to Provide <br />
-                <span className="text-rose-600">Exceptional Care</span>
+                <span className="text-rose-600 dark:text-rose-500">Exceptional Care</span>
               </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-8">
                 At Care.xyz, we believe that everyone deserves high-quality
                 care. Our platform connects you with verified, trained, and
                 compassionate professionals who treat your family like their
@@ -422,14 +422,14 @@ const Page = () => {
                 ].map((item, index) => (
                   <motion.li
                     key={index}
-                    className="flex items-center text-gray-700"
+                    className="flex items-center text-gray-700 dark:text-gray-300"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     viewport={{ once: true }}
                   >
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mr-3">
+                      <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                     </div>
                     {item}
                   </motion.li>
@@ -438,7 +438,7 @@ const Page = () => {
               <div className="mt-10">
                 <Link
                   href="/about"
-                  className="text-rose-600 font-semibold hover:text-rose-700 flex items-center"
+                  className="text-rose-600 dark:text-rose-500 font-semibold hover:text-rose-700 dark:hover:text-rose-400 flex items-center"
                 >
                   Learn more about us <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>

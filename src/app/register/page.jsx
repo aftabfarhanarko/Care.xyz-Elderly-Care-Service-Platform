@@ -80,19 +80,19 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-200">
             <motion.div 
                 initial="hidden"
                 animate="visible"
                 variants={fadeInUp}
                 className="sm:mx-auto sm:w-full sm:max-w-md"
             >
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
                     Create your account
                 </h2>
-                <p className="mt-2 text-center text-sm text-gray-600">
+                <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                     Already have an account?{' '}
-                    <Link href="/login" className="font-medium text-rose-600 hover:text-rose-500">
+                    <Link href="/login" className="font-medium text-rose-600 dark:text-rose-500 hover:text-rose-500 dark:hover:text-rose-400">
                         Sign in
                     </Link>
                 </p>
@@ -105,10 +105,10 @@ const RegisterPage = () => {
                 transition={{ delay: 0.1 }}
                 className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
             >
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 dark:border-gray-700">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <User className="h-5 w-5 text-gray-400" />
@@ -117,7 +117,7 @@ const RegisterPage = () => {
                                     name="name"
                                     type="text"
                                     required
-                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
+                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder="John Doe"
                                     onChange={handleChange}
                                 />
@@ -125,7 +125,7 @@ const RegisterPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Email address</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Mail className="h-5 w-5 text-gray-400" />
@@ -134,7 +134,7 @@ const RegisterPage = () => {
                                     name="email"
                                     type="email"
                                     required
-                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
+                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder="you@example.com"
                                     onChange={handleChange}
                                 />
@@ -142,7 +142,7 @@ const RegisterPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Number</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Phone className="h-5 w-5 text-gray-400" />
@@ -151,7 +151,7 @@ const RegisterPage = () => {
                                     name="contact"
                                     type="tel"
                                     required
-                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
+                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder="+880 1234 567890"
                                     onChange={handleChange}
                                 />
@@ -159,7 +159,7 @@ const RegisterPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">NID Number</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">NID Number</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <FileText className="h-5 w-5 text-gray-400" />
@@ -168,7 +168,7 @@ const RegisterPage = () => {
                                     name="nid"
                                     type="text"
                                     required
-                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
+                                    className="focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder="NID Number"
                                     onChange={handleChange}
                                 />
@@ -176,7 +176,7 @@ const RegisterPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Lock className="h-5 w-5 text-gray-400" />
@@ -185,7 +185,7 @@ const RegisterPage = () => {
                                     name="password"
                                     type={showPassword ? 'text' : 'password'}
                                     required
-                                    className={`focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 ${errors.password ? 'border-red-300' : ''}`}
+                                    className={`focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 ${errors.password ? 'border-red-300' : ''}`}
                                     placeholder="••••••••"
                                     onChange={handleChange}
                                 />
@@ -199,25 +199,25 @@ const RegisterPage = () => {
                                     </button>
                                 </div>
                             </div>
-                            {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+                            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
                                     name="confirmPassword"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     required
-                                    className={`focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 ${errors.confirmPassword ? 'border-red-300' : ''}`}
+                                    className={`focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 ${errors.confirmPassword ? 'border-red-300' : ''}`}
                                     placeholder="••••••••"
                                     onChange={handleChange}
                                 />
                             </div>
-                            {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>}
+                            {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
                         </div>
 
                         <div>
@@ -225,10 +225,10 @@ const RegisterPage = () => {
                                 type="submit"
                                 disabled={loading}
                                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                                    loading ? 'bg-gray-400' : 'bg-rose-600 hover:bg-rose-700'
+                                    loading ? 'bg-gray-400' : 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-colors`}
                             >
-                                {loading ? 'Creating Account...' : 'Sign Up'}
+                                {loading ? 'Creating account...' : 'Create Account'}
                             </button>
                         </div>
                     </form>

@@ -27,7 +27,7 @@ const ServicesPage = () => {
       name: 'Baby Care',
       icon: Baby,
       description: 'Professional babysitting for your little ones. Safe, fun, and educational activities included.',
-      color: 'bg-blue-100 text-blue-600',
+      color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
       priceVal: 15,
       features: ['Certified Babysitters', 'Educational Activities', 'Meal Preparation', 'Bedtime Routines']
     },
@@ -36,7 +36,7 @@ const ServicesPage = () => {
       name: 'Elderly Care',
       icon: Users,
       description: 'Compassionate companionship and assistance with daily activities for your seniors.',
-      color: 'bg-purple-100 text-purple-600',
+      color: 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400',
       priceVal: 20,
       features: ['Medication Reminders', 'Mobility Assistance', 'Companionship', 'Light Housekeeping']
     },
@@ -45,14 +45,14 @@ const ServicesPage = () => {
       name: 'Sick Care',
       icon: Stethoscope,
       description: 'Dedicated support for recovery and health monitoring by certified nurses.',
-      color: 'bg-rose-100 text-rose-600',
+      color: 'bg-rose-100 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400',
       priceVal: 25,
       features: ['Certified Nurses', 'Vitals Monitoring', 'Medication Administration', 'Post-Op Care']
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial="hidden"
@@ -60,8 +60,8 @@ const ServicesPage = () => {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Services</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Our Services</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Choose the perfect care plan for your family. All our services come with verified professionals and 24/7 support.
           </p>
         </motion.div>
@@ -76,18 +76,18 @@ const ServicesPage = () => {
             <motion.div 
               key={service.id} 
               variants={fadeInUp}
-              className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col"
             >
               <div className="p-8 flex-grow">
                 <div className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center mb-6`}>
                   <service.icon className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{service.name}</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{service.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{service.description}</p>
                 
                 <ul className="space-y-3 mb-8">
                   {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center text-gray-600 text-sm">
+                    <li key={idx} className="flex items-center text-gray-600 dark:text-gray-300 text-sm">
                       <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                       {feature}
                     </li>
@@ -95,25 +95,24 @@ const ServicesPage = () => {
                 </ul>
               </div>
               
-              <div className="p-6 bg-gray-50 border-t border-gray-100 mt-auto">
+              <div className="p-6 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 mt-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-500">Starting from</span>
-                  <span className="text-2xl font-bold text-gray-900">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Starting from</span>
+                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
                     <CountUp
                       end={service.priceVal}
+                      duration={2}
                       prefix="$"
                       suffix="/hr"
-                      duration={2.5}
-                      enableScrollSpy
-                      scrollSpyOnce
                     />
                   </span>
                 </div>
-                <Link 
-                  href={`/services/${service.id}`}
-                  className="block w-full py-3 px-6 bg-gray-900 text-white text-center rounded-xl font-semibold hover:bg-gray-800 transition-colors"
-                >
-                  Book Now
+                
+                <Link href={`/services/${service.id}`}>
+                  <button className="w-full py-3 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors flex items-center justify-center group">
+                    Book Now
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </Link>
               </div>
             </motion.div>
