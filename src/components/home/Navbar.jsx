@@ -111,13 +111,8 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-12">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2 group">
-                        <div className="bg-gradient-to-br from-rose-500 to-purple-600 p-2 rounded-xl text-white transform group-hover:scale-110 transition-transform duration-200 shadow-lg shadow-rose-500/20">
-                            <Heart className="w-5 h-5 fill-current" />
-                        </div>
-                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 group-hover:from-rose-600 group-hover:to-purple-600 transition-all duration-300">
-                            Care.xyz
-                        </span>
+                    <Link href="/" className="">
+                      <img src='/logo2.png' className=' h-32 w-42'></img>
                     </Link>
 
                     {/* Desktop Navigation */}
