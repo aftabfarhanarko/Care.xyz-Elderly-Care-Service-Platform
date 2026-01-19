@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   CheckCircle,
@@ -9,67 +8,81 @@ import {
   MapPin,
   DollarSign,
   Calendar,
+  Baby,
+  PawPrint,
+  Stethoscope,
+  Users,
+  Star,
+  Phone,
+  Mail,
+  ShieldCheck,
+  Heart,
+  Car,
+  ChevronRight,
+  Activity,
+  Brain,
+  Utensils,
+  Accessibility,
+  Pill,
+  Pause,
+  Puzzle,
+  Bandage,
+  Infinity,
+  Home,
+  Moon,
+  BrainCircuit,
+  Mic,
+  Book,
+  Droplet,
+  Armchair,
+  HeartPulse,
+  Bus,
+  Building,
+  Waves,
+  Ambulance,
+  Search,
+  Filter,
 } from "lucide-react";
+import CountUp from "react-countup";
+import { motion } from "framer-motion";
 
-const ServiceDetailContent = () => {
-  
+const iconMap = {
+  Baby,
+  Users,
+  Stethoscope,
+  Activity,
+  Brain,
+  Heart,
+  Utensils,
+  Accessibility,
+  Pill,
+  Pause,
+  Puzzle,
+  Bandage,
+  Infinity,
+  Car,
+  Home,
+  Moon,
+  BrainCircuit,
+  Mic,
+  Book,
+  Droplet,
+  Armchair,
+  HeartPulse,
+  Bus,
+  Building,
+  Waves,
+  Ambulance,
+  PawPrint,
+};
 
-  // Mock Data (In a real app, fetch from API)
-  const services = [
-    {
-      id: 1,
-      name: "Baby Care Service",
-      description:
-        "Professional baby sitting and care services for your little ones.",
-      longDescription:
-        "Our trained babysitters provide comprehensive care including feeding, playing, changing diapers, and ensuring your baby's safety and happiness. We understand that every child is unique, and our caregivers are adaptable to your specific routine.",
-      price: 500,
-      features: [
-        "Experienced Caretakers",
-        "Safety Certified",
-        "24/7 Available",
-        "Activity Planning",
-        "Emergency First Aid",
-      ],
-      image: "bg-blue-100",
-    },
-    {
-      id: 2,
-      name: "Elderly Care Service",
-      description:
-        "Compassionate care for senior citizens with dignity and respect.",
-      longDescription:
-        "We provide personalized elderly care services including medication management, mobility assistance, companionship, and daily living support. Our goal is to improve quality of life while ensuring safety and comfort.",
-      price: 600,
-      features: [
-        "Medical Assistance",
-        "Companion Care",
-        "Mobility Support",
-        "Meal Preparation",
-        "Health Monitoring",
-      ],
-      image: "bg-purple-100",
-    },
-    {
-      id: 3,
-      name: "Sick People Service",
-      description:
-        "Dedicated nursing and care for patients recovering at home.",
-      longDescription:
-        "Professional nursing care for patients needing medical attention at home, including medication, wound care, and health monitoring. Our nurses are certified and experienced in handling various medical conditions.",
-      price: 700,
-      features: [
-        "Nursing Care",
-        "Health Monitoring",
-        "Medication Management",
-        "Emergency Support",
-        "Post-Op Care",
-      ],
-      image: "bg-rose-100",
-    },
-  ];
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
-  const service = services.find((s) => s.id === parseInt(service_id));
+const ServiceDetailContent = ({ service }) => {
+  const [activeImage, setActiveImage] = useState(0);
 
   if (!service) {
     return (
@@ -89,9 +102,12 @@ const ServiceDetailContent = () => {
     );
   }
 
+  const IconComponent = iconMap[service.icon] || Baby;
+  const images = service.images || [];
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           href="/services"
           className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 mb-8 transition-colors"
@@ -100,98 +116,266 @@ const ServiceDetailContent = () => {
           Back to Services
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column: Image & Quick Info */}
-          <div>
-            <div
-              className={`h-96 rounded-2xl ${service.image} flex items-center justify-center mb-8`}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content - Left Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Header Section */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700"
             >
-              {/* Placeholder for actual image */}
-              <span className="text-6xl font-bold text-gray-400 opacity-50">
-                {service.name}
-              </span>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Service Highlights
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center text-gray-600 dark:text-gray-300">
-                  <Clock className="w-5 h-5 text-rose-500 mr-3" />
-                  <span>24/7 Support</span>
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`w-16 h-16 ${
+                      service.color || "bg-blue-100 text-blue-600"
+                    } rounded-2xl flex items-center justify-center`}
+                  >
+                    <IconComponent className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {service.name}
+                    </h1>
+                    <div className="flex items-center gap-2 mt-2 text-gray-500 dark:text-gray-400">
+                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {service.customerReviews?.length > 0
+                          ? (
+                              service.customerReviews.reduce(
+                                (acc, rev) => acc + rev.rating,
+                                0
+                              ) / service.customerReviews.length
+                            ).toFixed(1)
+                          : "New"}
+                      </span>
+                      <span>
+                        ({service.customerReviews?.length || 0} reviews)
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center text-gray-600 dark:text-gray-300">
-                  <MapPin className="w-5 h-5 text-rose-500 mr-3" />
-                  <span>Nationwide</span>
-                </div>
-                <div className="flex items-center text-gray-600 dark:text-gray-300">
-                  <CheckCircle className="w-5 h-5 text-rose-500 mr-3" />
-                  <span>Verified Pros</span>
-                </div>
-                <div className="flex items-center text-gray-600 dark:text-gray-300">
-                  <Calendar className="w-5 h-5 text-rose-500 mr-3" />
-                  <span>Flexible Booking</span>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                    $
+                    <CountUp
+                      end={service.priceVal}
+                      duration={2}
+                      separator=","
+                    />
+                  </div>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    /hour
+                  </span>
                 </div>
               </div>
+
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+                {service.detailedDescription || service.description}
+              </p>
+
+              {/* Image Gallery */}
+              {images.length > 0 && (
+                <div className="mb-8">
+                  <div className="aspect-video w-full rounded-xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-700 relative group">
+                    <img
+                      src={images[activeImage]}
+                      alt={`${service.name} ${activeImage + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImage(idx)}
+                        className={`relative w-24 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                          activeImage === idx
+                            ? "border-rose-600"
+                            : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Features */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {service.features?.map((feature, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
+                  >
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700 dark:text-gray-200 font-medium">
+                      {feature}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Additional Services & Requirements */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeInUp}
+                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+              >
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-rose-600" />
+                  Caregiver Requirements
+                </h3>
+                <ul className="space-y-3">
+                  {service.caregiverRequirements?.map((req, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-start text-gray-600 dark:text-gray-300"
+                    >
+                      <span className="w-1.5 h-1.5 bg-rose-600 rounded-full mt-2 mr-3 flex-shrink-0" />
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeInUp}
+                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+              >
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Car className="w-5 h-5 text-blue-600" />
+                  Additional Services
+                </h3>
+                <ul className="space-y-3">
+                  {service.additionalServices?.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-start text-gray-600 dark:text-gray-300"
+                    >
+                      <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
             </div>
+
+            {/* Reviews Section */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700"
+            >
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                Customer Reviews
+              </h3>
+              <div className="space-y-6">
+                {service.customerReviews?.map((review, idx) => (
+                  <div
+                    key={idx}
+                    className="border-b border-gray-100 dark:border-gray-700 last:border-0 pb-6 last:pb-0"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-gray-900 dark:text-white">
+                        {review.user}
+                      </h4>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < review.rating
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-300 dark:text-gray-600"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-300 italic">
+                      "{review.comment}"
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right Column: Details & Booking */}
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
-              {service.name}
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              {service.description}
-            </p>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                What's Included
+          {/* Sidebar - Right Column */}
+          <div className="space-y-8">
+            {/* Booking Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 sticky top-24">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Service Availability
               </h3>
-              <ul className="space-y-4">
-                {service.features.map((feature, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start text-gray-600 dark:text-gray-300"
-                  >
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <Calendar className="w-5 h-5 text-gray-400 mt-1" />
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Days
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {service.serviceAvailability?.days?.join(", ")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="w-5 h-5 text-gray-400 mt-1" />
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Hours
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {service.serviceAvailability?.hours}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Description
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                {service.longDescription}
+              <Link
+                href={`/booking/${service._id}`}
+                className="block w-full py-4 px-6 bg-rose-600 text-white rounded-xl font-bold text-center hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 dark:shadow-rose-900/30 mb-4"
+              >
+                Book This Service
+              </Link>
+              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                Free cancellation up to 24 hours before appointment
               </p>
             </div>
 
-            <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  Starting from
-                </p>
-                <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                    ${service.price}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 ml-2">
-                    /day
-                  </span>
+            {/* Contact Info */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-800">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                Have Questions?
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                  <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span>{service.contactInfo?.phone}</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                  <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span>{service.contactInfo?.email}</span>
                 </div>
               </div>
-              <Link
-                href={`/booking/${service.id}`}
-                className="px-8 py-4 bg-rose-600 text-white rounded-xl font-bold text-lg hover:bg-rose-700 transition-all shadow-lg shadow-rose-200 dark:shadow-rose-900/30 flex items-center"
-              >
-                Book Now
-                <DollarSign className="w-5 h-5 ml-2" />
-              </Link>
             </div>
           </div>
         </div>
