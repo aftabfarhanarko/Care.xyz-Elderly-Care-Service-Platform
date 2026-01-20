@@ -15,6 +15,7 @@ import {
   Map as MapIcon
 } from "lucide-react";
 import { toast } from "sonner";
+import { fromDataSaved } from "@/actions/serverData/getData";
 
 const FillFrom = () => {
   const [formData, setFormData] = useState({
@@ -56,15 +57,14 @@ const FillFrom = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await fromDataSaved(formData);
       console.log("Form Data Submitted:", formData);
       toast.success("Message sent successfully! We'll get back to you soon.");
-      setLoading(false);
       setSubmitted(true);
       
       // Reset after 3 seconds
@@ -84,7 +84,12 @@ const FillFrom = () => {
         });
         setAvailableAreas([]);
       }, 3000);
-    }, 1500);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fadeInUp = {
@@ -98,7 +103,7 @@ const FillFrom = () => {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className=" dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 relative"
+        className=" dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 da rk:border-gray-700 relative"
       >
         <div className="p-8 md:p-12">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center">Send Message</h2>

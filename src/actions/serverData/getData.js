@@ -90,3 +90,13 @@ export const getSingleCaregiver = async (id) => {
   }
   return data;
 };
+
+// From Data Saved DB 
+
+export const fromDataSaved = async (formData) => {
+  const result = await dbConnect(collections.FROMDATA).insertOne(formData);
+  return {
+    acknowledged: result.acknowledged,
+    insertedId: result.insertedId.toString(),
+  };
+}
