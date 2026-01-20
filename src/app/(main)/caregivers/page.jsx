@@ -1,10 +1,14 @@
+import { getcaregiversData } from "@/actions/serverData/getData";
 import FullPages from "@/components/caregivers/FullPages";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const caregivers = await getcaregiversData();
+  console.log("getcaregiversData", caregivers);
+
   return (
     <div>
-      <FullPages />
+      <FullPages caregivers={caregivers} />
     </div>
   );
 };

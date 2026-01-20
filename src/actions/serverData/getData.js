@@ -58,10 +58,30 @@ export const getSingleServices = async (id) => {
 export const getAllServices = async () => {
   const collection = dbConnect(collections.SERVICES);
   const data = await collection.find({}).toArray();
-  
+
   return data.map((item) => ({
     ...item,
     id: item._id ? item._id.toString() : undefined,
     _id: item._id ? item._id.toString() : undefined,
   }));
+};
+
+// caregivers Data
+
+export const getcaregiversData = async () => {
+  const data = await dbConnect(collections.CAREGIVERS).find().toArray();
+  return data.map((item) => ({
+    ...item,
+    id: item._id ? item._id.toString() : undefined,
+    _id: item._id ? item._id.toString() : undefined,
+  }));
+};
+
+export const getSingleCaregiver = async (id) => {
+  const query = { _id: new ObjectId(id) };
+  const data = await dbConnect(collections.CAREGIVERS).findOne(query);
+  if (data) {
+    data._id = data._id.toString();
+  }
+  return data;
 };

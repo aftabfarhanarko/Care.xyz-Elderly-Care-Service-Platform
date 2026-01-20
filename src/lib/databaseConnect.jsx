@@ -4,6 +4,7 @@ const dbname = process.env.DBNAME;
 export const collections = {
   SERVICES: "services",
   USER: "users",
+  CAREGIVERS:"caregivers"
 };
 
 const { MongoClient, ServerApiVersion } = require("mongodb");

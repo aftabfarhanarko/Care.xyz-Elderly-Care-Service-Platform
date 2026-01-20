@@ -4,19 +4,25 @@ import { useParams } from "next/navigation";
 import { caregivers } from "@/data/caregivers";
 import DetlicesData from "@/components/caregivers/DetlicesData";
 
-const CaregiverDetailsPage = () => {
+const CaregiverDetailsPage = ({ caregiver: serverCaregiver }) => {
   const params = useParams();
-  const [caregiver, setCaregiver] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [caregiver, setCaregiver] = useState(serverCaregiver || null);
+  const [loading, setLoading] = useState(!serverCaregiver);
 
   useEffect(() => {
+    if (serverCaregiver) {
+      setCaregiver(serverCaregiver);
+      setLoading(false);
+      return;
+    }
+
     // Simulate loading for smooth animation
     if (params?.id) {
       const found = caregivers.find((c) => c.id === parseInt(params.id));
       setCaregiver(found);
       setLoading(false);
     }
-  }, [params?.id]);
+  }, [params?.id, serverCaregiver]);
 
   if (loading) {
     return (
