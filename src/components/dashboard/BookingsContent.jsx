@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import React, { useState } from "react";
 
 const BookingsContent = ({ allBookig = [] }) => {
@@ -16,6 +17,16 @@ const BookingsContent = ({ allBookig = [] }) => {
       filterStatus === "all" || booking.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
+
+  // Delete Booking
+  const handelDelete = (id) => {
+    console.log("Delete Book id ", id);
+  };
+
+  const hadelConfrie = (id) => {
+    console.log("penndinng to updeat Conferam", id);
+    
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -35,13 +46,13 @@ const BookingsContent = ({ allBookig = [] }) => {
               placeholder="Search bookings..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
             />
           </div>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 dark:hover:bg-rose-900/20 dark:hover:text-rose-400 dark:hover:border-rose-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -120,21 +131,38 @@ const BookingsContent = ({ allBookig = [] }) => {
                       </div>
                     </td>
                     <td className="p-6">
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-sm text-gray-600 dark:text-gray-300">
-                            ⏰ {booking.bookingDetails?.dutyTime}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-500 shrink-0">
+                            <Clock className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                            {booking.bookingDetails?.dutyTime}
                           </span>
                         </div>
-                        <div>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            📅 {booking.bookingDetails?.duration} Hours
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0">
+                            <Calendar className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                            {booking.bookingDetails?.duration} Hours
                           </span>
                         </div>
-                        {booking.bookingDetails?.location && (
-                          <div>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              📍 {booking.bookingDetails.location.address}
+                        {(booking.bookingDetails?.location?.address ||
+                          booking.bookingDetails?.address) && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500 shrink-0">
+                              <MapPin className="w-4 h-4" />
+                            </div>
+                            <span
+                              className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate max-w-[150px]"
+                              title={
+                                booking.bookingDetails?.location?.address ||
+                                booking.bookingDetails?.address
+                              }
+                            >
+                              {booking.bookingDetails?.location?.address ||
+                                booking.bookingDetails?.address}
                             </span>
                           </div>
                         )}
@@ -148,25 +176,39 @@ const BookingsContent = ({ allBookig = [] }) => {
                     </td>
                     <td className="p-6">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border shadow-sm ${
                           booking.status === "pending"
-                            ? "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800"
+                            ? "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border-amber-200 dark:from-amber-900/20 dark:to-orange-900/20 dark:text-amber-400 dark:border-amber-800"
                             : booking.status === "confirmed"
-                              ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                              ? "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border-emerald-200 dark:from-emerald-900/20 dark:to-teal-900/20 dark:text-emerald-400 dark:border-emerald-800"
                               : "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
                         }`}
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            booking.status === "pending"
+                              ? "bg-amber-500"
+                              : booking.status === "confirmed"
+                                ? "bg-emerald-500"
+                                : "bg-gray-500"
+                          }`}
+                        />
                         {booking.status.charAt(0).toUpperCase() +
                           booking.status.slice(1)}
                       </span>
                     </td>
                     <td className="p-6">
                       <div className="flex items-center justify-end gap-3">
-                        <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors">
+                        <button
+                          onClick={() => handelDelete(booking._id)}
+                          className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/20 dark:hover:text-rose-400 transition-colors"
+                        >
                           Delete
                         </button>
-                        <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-purple-600 text-white font-medium text-sm shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 hover:-translate-y-0.5 transition-all">
+                        <button
+                          onClick={() => hadelConfrie(booking._id)}
+                          className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-purple-600 text-white font-medium text-sm shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 hover:-translate-y-0.5 transition-all"
+                        >
                           Confirm
                         </button>
                       </div>

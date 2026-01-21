@@ -36,7 +36,7 @@ const DashboardLayoutContent = ({ children }) => {
     roleManeze === "user"
       ? [
           { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-          { name: "My Bookings", href: "/dashboard/bookings", icon: Calendar },
+          { name: "Services Bookings", href: "/dashboard/bookings", icon: Calendar },
           {
             name: "Messages",
             href: "/dashboard/messages",
