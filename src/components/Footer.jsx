@@ -22,7 +22,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-6">
             <Link href="/" className="">
-              <img src="/logo2.png" className=" h-32 w-42"></img>
+              <img src="/logo2.png" className="h-13 w-38 mb-10"></img>
             </Link>
             <p className="text-gray-400 leading-relaxed">
               Connecting families with trusted caregivers since 2024. Safety,

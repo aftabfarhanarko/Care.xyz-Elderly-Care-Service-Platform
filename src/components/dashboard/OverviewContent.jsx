@@ -512,8 +512,10 @@ const OverviewContent = () => {
               {userRole === "user" ? "Upcoming Bookings" : "Upcoming Jobs"}
             </h2>
             <button className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center gap-1 group">
-              View All 
-              <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+              View All
+              <span className="group-hover:translate-x-0.5 transition-transform">
+                →
+              </span>
             </button>
           </div>
 
@@ -559,7 +561,9 @@ const OverviewContent = () => {
                       </td>
                       <td className="whitespace-nowrap px-8 py-5">
                         <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">{item.date}</span>
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {item.date}
+                          </span>
                           <span className="text-xs font-medium text-gray-400 mt-0.5">
                             {item.time}
                           </span>
@@ -573,7 +577,9 @@ const OverviewContent = () => {
                               : "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
                           }`}
                         >
-                          {item.status === "Confirmed" && <div className="w-1.5 h-1.5 rounded-full bg-current mr-1.5" />}
+                          {item.status === "Confirmed" && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-current mr-1.5" />
+                          )}
                           {item.status}
                         </span>
                       </td>
@@ -607,7 +613,7 @@ const OverviewContent = () => {
           <div className="relative rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl p-8 shadow-xl shadow-rose-500/5 overflow-hidden">
             {/* Timeline Line */}
             <div className="absolute left-[2.25rem] top-8 bottom-8 w-px bg-gradient-to-b from-gray-200 via-gray-200 to-transparent dark:from-gray-700 dark:via-gray-700" />
-            
+
             <div className="space-y-8 relative">
               {recentActivity.map((act, i) => (
                 <motion.div
@@ -634,16 +640,15 @@ const OverviewContent = () => {
                 </motion.div>
               ))}
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
-               <button className="w-full py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-rose-500 transition-colors">
-                 View All Activity
-               </button>
+              <button className="w-full py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-rose-500 transition-colors">
+                View All Activity
+              </button>
             </div>
           </div>
         </motion.div>
       </div>
-
     </div>
   );
 };
