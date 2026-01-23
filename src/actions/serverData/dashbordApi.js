@@ -178,3 +178,91 @@ export const deleteCaregivers = async (id) => {
     };
   }
 };
+
+// Current User Data SHow And Updeat
+export const getCurrentUser = async (email) => {
+  try {
+    if (!email) {
+      return {
+        success: false,
+        message: "Email is required",
+      };
+    }
+
+    const user = await dbConnect(collections.USER).findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // Convert _id to string
+    const safeUser = {
+      ...user,
+      _id: user._id.toString(),
+    };
+
+    return {
+      success: true,
+      user: safeUser,
+    };
+  } catch (error) {
+    console.error("Get Current User Error:", error);
+    return {
+      success: false,
+      message: "Failed to get user",
+    };
+  }
+};
+
+export const updateCurrentUser = async (id, updateData) => {
+  try {
+    if (!id) {
+      return {
+        success: false,
+        message: "User ID is required",
+      };
+    }
+
+    const { _id, email, createdAt, ...safeUpdateData } = updateData;
+
+    if (Object.keys(safeUpdateData).length === 0) {
+      return {
+        success: false,
+        message: "No fields to update",
+      };
+    }
+
+    const query = { _id: new ObjectId(id) };
+
+    const update = {
+      $set: {
+        ...safeUpdateData,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    const result = await dbConnect(collections.USER).updateOne(query, update);
+
+    if (result.matchedCount === 0) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "User updated successfully",
+      result,
+    };
+  } catch (error) {
+    console.error("Update Current User Error:", error);
+    return {
+      success: false,
+      message: "Failed to update user",
+    };
+  }
+};

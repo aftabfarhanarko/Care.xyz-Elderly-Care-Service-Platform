@@ -51,14 +51,9 @@ const DashboardLayoutContent = ({ children }) => {
             href: "/dashboard/favorites",
             icon: Heart,
           },
-          {
-            name: "Messages",
-            href: "/dashboard/messages",
-            icon: MessageSquare,
-          },
 
-          { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
           { name: "Profile", href: "/dashboard/profile", icon: User },
+          // { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
           { name: "Settings", href: "/dashboard/settings", icon: Settings },
         ]
       : [
@@ -66,11 +61,6 @@ const DashboardLayoutContent = ({ children }) => {
           { name: "My Jobs", href: "/dashboard/jobs", icon: Calendar },
           { name: "My Services", href: "/dashboard/services", icon: Briefcase },
           { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
-          {
-            name: "Messages",
-            href: "/dashboard/messages",
-            icon: MessageSquare,
-          },
           { name: "Profile", href: "/dashboard/profile", icon: User },
           { name: "Settings", href: "/dashboard/settings", icon: Settings },
         ];
