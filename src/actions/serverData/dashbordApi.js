@@ -266,3 +266,22 @@ export const updateCurrentUser = async (id, updateData) => {
     };
   }
 };
+
+// My Add Caregivers
+
+export const getMyAddcaregivers = async (email) => {
+  try {
+    const result = await dbConnect(collections.CAREGIVERS)
+      .find({ publishEmail: email })
+      .toArray();
+
+    return result.map((item) => ({
+      ...item,
+      _id: item._id.toString(),
+    }));
+  } catch (error) {
+    console.error("Error fetching caregivers by email:", error);
+    // Optional: throw error to be handled by caller
+    throw error;
+  }
+};

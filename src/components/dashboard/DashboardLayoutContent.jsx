@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import useRole from "@/hook/Role";
 
 export const DashboardContext = createContext();
 
@@ -31,11 +32,20 @@ export const useDashboard = () => useContext(DashboardContext);
 
 const DashboardLayoutContent = ({ children }) => {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userRole, setUserRole] = useState("user");
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { data } = useSession();
-  const roleManeze = data?.user?.role;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const roleManeze = useRole();
+  const [userRole, setUserRole] = useState(roleManeze || "user");
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+  // Sync context state with fetched role
+  React.useEffect(() => {
+    if (roleManeze) {
+      setUserRole(roleManeze);
+    }
+  }, [roleManeze]);
+
+  console.log("Current Dashboard Role:", roleManeze);
 
   const navItems =
     roleManeze === "user"
@@ -58,7 +68,7 @@ const DashboardLayoutContent = ({ children }) => {
         ]
       : [
           { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-          { name: "My Jobs", href: "/dashboard/jobs", icon: Calendar },
+          { name: "My Caregivers", href: "/dashboard/jobs", icon: Calendar },
           { name: "My Services", href: "/dashboard/services", icon: Briefcase },
           { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
           { name: "Profile", href: "/dashboard/profile", icon: User },

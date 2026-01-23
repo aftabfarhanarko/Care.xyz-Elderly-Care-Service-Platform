@@ -1,0 +1,80 @@
+about
+: 
+"After-school tutor helping students with homework and exam preparation."
+experience
+: 
+"3 Years"
+id
+: 
+"696f572d563eb7ac302017b4"
+image
+: 
+"https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=687&auto=format&fit=crop"
+location
+: 
+"Queens, NY"
+name
+: 
+"Lucas B."
+rate
+: 
+24
+rating
+: 
+4.6
+reviews
+: 
+48
+reviews_list
+: 
+Array(1)
+0
+: 
+date
+: 
+"3 weeks ago"
+rating
+: 
+5
+text
+: 
+"Very helpful and patient."
+user
+: 
+"Sam T."
+[[Prototype]]
+: 
+Object
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+role
+: 
+"After School Tutor"
+services
+: 
+Array(4)
+0
+: 
+"Homework Help"
+1
+: 
+"Exam Prep"
+2
+: 
+"Math Support"
+3
+: 
+"Study Planning"
+length
+: 
+4
+[[Prototype]]
+: 
+Array(0)
+_id
+: 
+"696f572d563eb7ac302017b4"
