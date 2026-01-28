@@ -269,6 +269,28 @@ export const updateCurrentUser = async (id, updateData) => {
 
 // My Add Caregivers
 
+export const createMyCaregiver = async (caregiverData) => {
+  try {
+    const result = await dbConnect(collections.CAREGIVERS).insertOne({
+      ...caregiverData,
+      createdAt: new Date().toISOString(),
+    });
+
+    if (!result.insertedId) {
+      return { success: false, message: "Failed to create caregiver" };
+    }
+
+    return {
+      success: true,
+      message: "Caregiver created successfully",
+      insertedId: result.insertedId,
+    };
+  } catch (error) {
+    console.error("Error creating caregiver:", error);
+    return { success: false, message: "Failed to create caregiver" };
+  }
+};
+
 export const getMyAddcaregivers = async (email) => {
   try {
     const result = await dbConnect(collections.CAREGIVERS)
@@ -283,6 +305,49 @@ export const getMyAddcaregivers = async (email) => {
     console.error("Error fetching caregivers by email:", error);
     // Optional: throw error to be handled by caller
     throw error;
+  }
+};
+
+export const updateMyCaregiver = async (id, updateData) => {
+  try {
+    const { _id, ...safeUpdateData } = updateData;
+    const query = { _id: new ObjectId(id) };
+    const update = {
+      $set: {
+        ...safeUpdateData,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    const result = await dbConnect(collections.CAREGIVERS).updateOne(
+      query,
+      update,
+    );
+
+    if (result.matchedCount === 0) {
+      return { success: false, message: "Caregiver not found" };
+    }
+
+    return { success: true, message: "Caregiver updated successfully" };
+  } catch (error) {
+    console.error("Error updating caregiver:", error);
+    return { success: false, message: "Failed to update caregiver" };
+  }
+};
+
+export const deleteMyCaregiver = async (id) => {
+  try {
+    const query = { _id: new ObjectId(id) };
+    const result = await dbConnect(collections.CAREGIVERS).deleteOne(query);
+
+    if (result.deletedCount === 0) {
+      return { success: false, message: "Caregiver not found" };
+    }
+
+    return { success: true, message: "Caregiver deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting caregiver:", error);
+    return { success: false, message: "Failed to delete caregiver" };
   }
 };
 

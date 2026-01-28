@@ -4,6 +4,13 @@ import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 import { imageUpload } from "../../utils/imagesUpDB";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  updateMyCaregiver,
+  deleteMyCaregiver,
+  createMyCaregiver,
+  getMyAddcaregivers,
+} from "@/actions/serverData/dashbordApi";
 import {
   Search,
   Filter,
@@ -31,6 +38,15 @@ import {
 
 const ProviderJobsContent = ({ caregivers }) => {
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
+
+  const { data: realtimeCaregivers } = useQuery({
+    queryKey: ["myCaregivers", session?.user?.email],
+    queryFn: () => getMyAddcaregivers(session?.user?.email),
+    enabled: !!session?.user?.email,
+    initialData: caregivers,
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -50,7 +66,15 @@ const ProviderJobsContent = ({ caregivers }) => {
     file: null,
   });
 
+  // Edit & View State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedCaregiver, setSelectedCaregiver] = useState(null);
+
   const handleAddNewClick = () => {
+    setIsEditing(false);
+    setEditingId(null);
     setFormData({
       name: "",
       role: "",
@@ -75,6 +99,63 @@ const ProviderJobsContent = ({ caregivers }) => {
     }
   };
 
+  const handleEditClick = (caregiver) => {
+    setIsEditing(true);
+    setEditingId(caregiver._id);
+    setFormData({
+      name: caregiver.name,
+      role: caregiver.role,
+      about: caregiver.about,
+      experience: caregiver.experience,
+      location: caregiver.location,
+      rate: caregiver.rate,
+      services: Array.isArray(caregiver.services)
+        ? caregiver.services.join(", ")
+        : caregiver.services,
+      publishEmail: caregiver.publishEmail,
+      file: null, // Keep existing image unless changed
+    });
+    setPreviewImage(caregiver.image);
+    setIsModalOpen(true);
+  };
+
+  const handleViewClick = (caregiver) => {
+    setSelectedCaregiver(caregiver);
+    setIsViewModalOpen(true);
+  };
+
+  const handleDeleteClick = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#f43f5e",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await deleteMyCaregiver(id);
+        if (response.success) {
+          Swal.fire("Deleted!", "Caregiver has been deleted.", "success");
+          // Optionally refresh data here if not using realtime/optimistic UI
+          // For now we assume parent component or router refresh handles it,
+          // or we rely on re-render if data prop updates.
+          // Since this is a client component receiving props, ideally we should
+          // trigger a refresh. But let's stick to the current scope.
+          // In a real app, we'd call router.refresh() here.
+          window.location.reload();
+        } else {
+          Swal.fire("Error!", response.message, "error");
+        }
+      } catch (error) {
+        Swal.fire("Error!", "Failed to delete caregiver.", "error");
+      }
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -83,36 +164,44 @@ const ProviderJobsContent = ({ caregivers }) => {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      let imageUrl = "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"; // Default or Placeholder
+      let imageUrl = "";
+      // Default or Placeholder
 
       if (formData.file) {
         imageUrl = await imageUpload(formData.file);
       }
 
-      const newCaregiver = {
+      const caregiverData = {
         name: formData.name,
         role: formData.role,
         about: formData.about,
         experience: formData.experience,
-        image: imageUrl,
+        image: imageUrl || previewImage,
         location: formData.location,
         rate: Number(formData.rate),
-        rating: 0,
-        reviews: 0,
         services: formData.services.split(",").map((s) => s.trim()),
         publishEmail: formData.publishEmail,
-        createdAt: new Date().toISOString(),
       };
 
-      console.log("New Caregiver Data:", newCaregiver);
-      
-      setIsModalOpen(false);
-      Swal.fire({
-        icon: "success",
-        title: "Caregiver Added",
-        text: "New caregiver has been successfully added.",
-        confirmButtonColor: "#f43f5e",
-      });
+      let response;
+      if (isEditing) {
+        response = await updateMyCaregiver(editingId, caregiverData);
+      } else {
+        response = await createMyCaregiver(caregiverData);
+      }
+
+      if (response.success) {
+        setIsModalOpen(false);
+        Swal.fire({
+          icon: "success",
+          title: isEditing ? "Caregiver Updated" : "Caregiver Added",
+          text: response.message,
+          confirmButtonColor: "#f43f5e",
+        });
+        queryClient.invalidateQueries(["myCaregivers", session?.user?.email]);
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error) {
       console.error("Error saving caregiver:", error);
       Swal.fire({
@@ -125,8 +214,8 @@ const ProviderJobsContent = ({ caregivers }) => {
 
   // Mock data if no props provided (using user's format)
   const jobsData =
-    caregivers && caregivers.length > 0
-      ? caregivers
+    realtimeCaregivers && realtimeCaregivers.length > 0
+      ? realtimeCaregivers
       : [
           {
             _id: "69735a6a31abce0f67a737a8",
@@ -212,12 +301,12 @@ const ProviderJobsContent = ({ caregivers }) => {
               </p>
             </div>
             <button
-            onClick={handleAddNewClick}
-            className="flex items-center gap-2 px-6 py-3.5 bg-white text-gray-900 hover:bg-gray-50 rounded-2xl font-bold transition-all shadow-xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Plus className="w-5 h-5 text-rose-600" />
-            Add New Caregiver
-          </button>
+              onClick={handleAddNewClick}
+              className="flex items-center gap-2 px-6 py-3.5 bg-white text-gray-900 hover:bg-gray-50 rounded-2xl font-bold transition-all shadow-xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Plus className="w-5 h-5 text-rose-600" />
+              Add New Caregiver
+            </button>
           </div>
         </div>
 
@@ -333,18 +422,21 @@ const ProviderJobsContent = ({ caregivers }) => {
                       <td className="px-8 py-5 whitespace-nowrap text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
+                            onClick={() => handleViewClick(job)}
                             className="p-2.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all hover:scale-110"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
+                            onClick={() => handleEditClick(job)}
                             className="p-2.5 text-amber-500 bg-amber-50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-xl transition-all hover:scale-110 shadow-sm"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
+                            onClick={() => handleDeleteClick(job._id)}
                             className="p-2.5 text-rose-500 bg-rose-50 dark:bg-rose-900/10 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-xl transition-all hover:scale-110 shadow-sm"
                             title="Delete"
                           >
@@ -667,15 +759,144 @@ const ProviderJobsContent = ({ caregivers }) => {
                     className="flex-1 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white rounded-xl font-bold shadow-lg shadow-rose-500/30 hover:shadow-rose-500/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     <Save className="w-5 h-5" />
-                    Save Caregiver
+                    {isEditing ? "Update Caregiver" : "Save Caregiver"}
                   </button>
                 </div>
               </form>
             </motion.div>
           </div>
         )}
+
+        {isViewModalOpen && selectedCaregiver && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white dark:bg-gray-800 rounded-[2.5rem] w-full max-w-2xl shadow-2xl overflow-hidden my-auto"
+            >
+              <div className="relative p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-blue-100 dark:bg-blue-900/20 rounded-2xl text-blue-600 dark:text-blue-400">
+                    <Eye className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Caregiver Details
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      View full profile information
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsViewModalOpen(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="p-6 md:p-8 space-y-6">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-700 shadow-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                    <img
+                      src={selectedCaregiver.image}
+                      alt={selectedCaregiver.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="space-y-4 flex-1">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {selectedCaregiver.name}
+                      </h3>
+                      <p className="text-rose-600 dark:text-rose-400 font-medium">
+                        {selectedCaregiver.role}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3">
+                      <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                        {selectedCaregiver.rating} ({selectedCaregiver.reviews}{" "}
+                        reviews)
+                      </div>
+                      <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-gray-400" />
+                        {selectedCaregiver.location}
+                      </div>
+                      <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-gray-400" />
+                        {selectedCaregiver.experience} Exp
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Hourly Rate
+                    </label>
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">
+                      ${selectedCaregiver.rate}/hr
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Contact Email
+                    </label>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white break-all">
+                      {selectedCaregiver.publishEmail}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Services
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {Array.isArray(selectedCaregiver.services) ? (
+                      selectedCaregiver.services.map((service, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg text-sm font-medium"
+                        >
+                          {service}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-900 dark:text-white">
+                        {selectedCaregiver.services}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    About
+                  </label>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl">
+                    {selectedCaregiver.about}
+                  </p>
+                </div>
+
+                <div className="pt-4 flex justify-end">
+                  <button
+                    onClick={() => setIsViewModalOpen(false)}
+                    className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
-      
     </div>
   );
 };
