@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -39,11 +38,6 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -93,13 +87,7 @@ const Navbar = () => {
   if (!mounted) return null;
 
   return (
-    <nav
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/80 dark:bg-gray-950/90 backdrop-blur-2xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50 py-3"
-          : "bg-gradient-to-b from-white/40 dark:from-gray-950/50 to-transparent backdrop-blur-sm border-b border-transparent py-4"
-      }`}
-    >
+    <nav className="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-950/90 backdrop-blur-2xl border-b border-gray-200/50 dark:border-gray-800/50 py-3 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4  lg:px-0">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

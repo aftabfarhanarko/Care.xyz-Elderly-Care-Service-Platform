@@ -14,8 +14,10 @@ import {
 import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
 import { caregiverDataSaved } from "@/actions/serverData/caregiverAPi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
     service: "",
@@ -164,6 +166,9 @@ const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
           const saveResult = await caregiverDataSaved(savedData);
 
           console.log("This Data Saved DB", saveResult);
+
+          // Invalidate the booking status query to update the UI immediately
+          queryClient.invalidateQueries(["bookingStatus", caregiver._id]);
 
           swalWithBootstrapButtons.fire({
             title: "Booking Confirmed!",
