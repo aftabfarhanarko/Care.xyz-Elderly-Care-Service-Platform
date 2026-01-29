@@ -45,12 +45,15 @@ import {
   Sparkles,
   Zap,
   Quote,
+  MessageSquare,
 } from "lucide-react";
 import CountUp from "react-countup";
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "../modal/Modal";
-import { singleData } from "@/actions/serverData/getData";
+import ServiceReviewModal from "../modal/ServiceReviewModal";
+import { singleData, getServiceReviews } from "@/actions/serverData/getData";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 const iconMap = {
   Baby,
@@ -100,6 +103,8 @@ const staggerContainer = {
 const ServiceDetailContent = ({ service }) => {
   const [activeImage, setActiveImage] = useState(0);
   const [isOpenModal, SetIsOpenModal] = useState(false);
+  const [isOpenReviewModal, setIsOpenReviewModal] = useState(false);
+  const { data: session } = useSession();
 
   // Fetch Location Data using TanStack Query
   const { data: locationData = [] } = useQuery({
@@ -116,12 +121,20 @@ const ServiceDetailContent = ({ service }) => {
     queryFn: async () => {
       const query = { service_id: service?._id || service?.id };
       const result = await singleData(query);
-      console.log("Single Data Result:", result);
+      return result;
+    },
+    enabled: !!(service?._id || service?.id) && !!session,
+  });
+
+  // Fetch Reviews using TanStack Query
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["serviceReviews", service?._id || service?.id],
+    queryFn: async () => {
+      const result = await getServiceReviews(service?._id || service?.id);
       return result;
     },
     enabled: !!(service?._id || service?.id),
   });
-  console.log("actived", bookingStatus);
 
   if (!service) {
     return (
@@ -167,8 +180,21 @@ const ServiceDetailContent = ({ service }) => {
 
   const showModal = () => {
     SetIsOpenModal(true);
-    console.log("Data Open");
   };
+
+  const displayReviews =
+    reviews.length > 0
+      ? reviews
+      : Array.isArray(service.customerReviews)
+        ? service.customerReviews
+        : [];
+  const averageRating =
+    displayReviews.length > 0
+      ? (
+          displayReviews.reduce((acc, rev) => acc + rev.rating, 0) /
+          displayReviews.length
+        ).toFixed(1)
+      : "New";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 font-sans relative overflow-hidden">
@@ -232,17 +258,10 @@ const ServiceDetailContent = ({ service }) => {
                       <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/10 px-2 py-1 rounded-lg border border-yellow-100 dark:border-yellow-900/30">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                         <span className="font-bold text-gray-900 dark:text-white">
-                          {customerReviews.length > 0
-                            ? (
-                                customerReviews.reduce(
-                                  (acc, rev) => acc + rev.rating,
-                                  0,
-                                ) / customerReviews.length
-                              ).toFixed(1)
-                            : "New"}
+                          {averageRating}
                         </span>
                         <span className="text-gray-500 dark:text-gray-400 ml-1">
-                          ({customerReviews.length} reviews)
+                          ({displayReviews.length} reviews)
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
@@ -396,47 +415,95 @@ const ServiceDetailContent = ({ service }) => {
                   Customer Reviews
                 </h3>
                 <div className="px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300">
-                  {customerReviews.length} Verified Reviews
+                  {displayReviews.length} Verified Reviews
                 </div>
               </div>
 
-              <div className="grid gap-6">
-                {customerReviews.map((review, idx) => (
-                  <div
-                    key={idx}
-                    className="p-6 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-sm">
-                          {review.user?.charAt(0) || "U"}
+              {displayReviews.length > 0 ? (
+                <div className="grid gap-6">
+                  {displayReviews.map((review, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="group relative p-6 md:p-8 bg-gray-50 dark:bg-gray-900/30 rounded-[2rem] border border-gray-100 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 shadow-md">
+                            {review.reviewerImage ? (
+                              <img
+                                src={review.reviewerImage}
+                                alt={review.reviewerName || "Reviewer"}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-rose-100 to-purple-100 dark:from-rose-900/50 dark:to-purple-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 font-bold text-lg">
+                                {(
+                                  review.reviewerName ||
+                                  review.user ||
+                                  "A"
+                                ).charAt(0)}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-900 dark:text-white text-lg">
+                              {review.reviewerName ||
+                                review.user ||
+                                "Anonymous"}
+                            </h4>
+                            {review.reviewerEmail && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                {review.reviewerEmail}
+                              </p>
+                            )}
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {review.createdAt
+                                ? new Date(
+                                    review.createdAt,
+                                  ).toLocaleDateString()
+                                : "Recently"}
+                            </p>
+                          </div>
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">
-                          {review.user}
-                        </h4>
+                        <div className="flex items-center gap-1 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < review.rating
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-gray-200 dark:text-gray-700"
+                              }`}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 bg-white dark:bg-gray-800 px-2 py-1 rounded-lg border border-gray-100 dark:border-gray-700">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-3.5 h-3.5 ${
-                              i < review.rating
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-200 dark:text-gray-700"
-                            }`}
-                          />
-                        ))}
+                      <div className="relative pl-8">
+                        <Quote className="w-6 h-6 text-rose-200 dark:text-rose-900/50 absolute left-0 top-0 transform -scale-x-100" />
+                        <p className="text-gray-600 dark:text-gray-300 text-lg italic leading-relaxed">
+                          "{review.description || review.comment}"
+                        </p>
                       </div>
-                    </div>
-                    <div className="relative pl-6">
-                      <Quote className="w-4 h-4 text-gray-300 dark:text-gray-600 absolute left-0 top-0 transform -scale-x-100" />
-                      <p className="text-gray-600 dark:text-gray-300 italic text-sm leading-relaxed">
-                        {review.comment}
-                      </p>
-                    </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/30 rounded-[2rem] border border-dashed border-gray-200 dark:border-gray-700">
+                  <div className="w-16 h-16 mx-auto bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm mb-4 text-gray-400 dark:text-gray-500">
+                    <MessageSquare className="w-8 h-8" />
                   </div>
-                ))}
-              </div>
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    No Reviews Yet
+                  </h4>
+                  <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                    Be the first to share your experience with this service!
+                    Book now to leave a review.
+                  </p>
+                </div>
+              )}
             </motion.div>
           </motion.div>
 
@@ -550,6 +617,14 @@ const ServiceDetailContent = ({ service }) => {
         service={service}
         locationData={locationData}
         SetIsOpenModal={SetIsOpenModal}
+        onBookingSuccess={() => setIsOpenReviewModal(true)}
+      />
+
+      {/* Review Modal */}
+      <ServiceReviewModal
+        isOpen={isOpenReviewModal}
+        onClose={() => setIsOpenReviewModal(false)}
+        service={service}
       />
     </div>
   );

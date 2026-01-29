@@ -201,3 +201,31 @@ export const singleData = async (query) => {
     return null;
   }
 };
+
+// Review Services Data
+export const saveServiceReview = async (data) => {
+  const result = await dbConnect(collections.REVIEWSERVICES).insertOne(data);
+  return { insertedId: result.insertedId.toString() };
+};
+
+export const getServiceReviews = async (serviceId) => {
+  try {
+    let serviceIdCondition = { serviceId: serviceId };
+    if (serviceId && ObjectId.isValid(serviceId)) {
+      serviceIdCondition = {
+        $or: [
+          { serviceId: serviceId },
+          { serviceId: new ObjectId(serviceId) },
+        ],
+      };
+    }
+    const result = await dbConnect(collections.REVIEWSERVICES)
+      .find(serviceIdCondition)
+      .sort({ createdAt: -1 })
+      .toArray();
+    return result.map((review) => ({ ...review, _id: review._id.toString() }));
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return [];
+  }
+};

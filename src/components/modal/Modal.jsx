@@ -20,7 +20,7 @@ import Swal from "sweetalert2";
 import { savedServicesData } from "@/actions/serverData/getData";
 import { useQueryClient } from "@tanstack/react-query";
 
-const Modal = ({ isOpen, onClose, service, locationData, SetIsOpenModal }) => {
+const Modal = ({ isOpen, onClose, service, locationData, SetIsOpenModal, onBookingSuccess }) => {
   const queryClient = useQueryClient();
   const session = useSession();
   const user = session?.data?.user;
@@ -275,6 +275,10 @@ const Modal = ({ isOpen, onClose, service, locationData, SetIsOpenModal }) => {
             "bookingStatus",
             service?._id || service?.id,
           ]);
+
+          if (onBookingSuccess) {
+            onBookingSuccess();
+          }
 
           swalWithBootstrapButtons.fire({
             title: "Booking Confirmed!",

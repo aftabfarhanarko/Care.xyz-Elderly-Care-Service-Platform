@@ -1,14 +1,14 @@
-
 const uri = `mongodb+srv://${process.env.DBNAME}:${process.env.DBPASS}@clustermyfirstmongodbpr.2cecfoe.mongodb.net/?appName=ClusterMyFirstMongoDbProject`;
 const dbname = process.env.DBNAME;
 export const collections = {
   SERVICES: "services",
   USER: "users",
-  CAREGIVERS:"caregivers",
-  FROMDATA:"fromData",
-  BOOKING:"bookingServices",
-  BOOKINGCAREGIVERS:"bookingcaregivers",
-  REVIEWCAREGIVERS: "reviewCaregivers"
+  CAREGIVERS: "caregivers",
+  FROMDATA: "fromData",
+  BOOKING: "bookingServices",
+  BOOKINGCAREGIVERS: "bookingcaregivers",
+  REVIEWCAREGIVERS: "reviewCaregivers",
+  REVIEWSERVICES: "reviewServices",
 };
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
