@@ -418,7 +418,7 @@ const AllFile = () => {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 pb-1">
               What Our Clients Say
             </h2>
             <p className="text-lg text-gray-600 mt-4">Real stories from real families.</p>
@@ -484,10 +484,10 @@ const AllFile = () => {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-rose-600 font-semibold tracking-wide uppercase text-sm">
+            <span className="font-semibold tracking-wide uppercase text-sm text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600">
               Resources
             </span>
-            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 pb-1">
               Latest from our Blog
             </h2>
             <p className="text-lg text-gray-600 mt-4">
@@ -868,25 +868,28 @@ const AllFile = () => {
                 name: "Dr. Emily Carter",
                 role: "Founder & CEO",
                 bio: "Former pediatrician with 15+ years of experience in child health.",
-                image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400"
+                image:
+                  "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400",
               },
               {
                 name: "James Wilson",
                 role: "Head of Safety",
                 bio: "Retired law enforcement officer specializing in background verification.",
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400"
+                image:
+                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
               },
               {
                 name: "Sophia Rodriguez",
                 role: "Care Director",
                 bio: "Certified child psychologist and early education specialist.",
-                image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=400"
+                image:
+                  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=400",
               },
             ].map((member, i) => (
               <motion.div key={i} variants={fadeInUp} className="text-center">
                 <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                  <img 
-                    src={member.image} 
+                  <img
+                    src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover"
                   />

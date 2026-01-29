@@ -208,7 +208,6 @@ export default function ImprovedAboutPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 font-sans overflow-hidden">
       {/* Hero Section - Fully Responsive */}
-     
 
       {/* Stats Section - Fully Responsive */}
       {/* <section className="py-8 sm:py-10 bg-rose-600 dark:bg-rose-900 text-white">

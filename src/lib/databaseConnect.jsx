@@ -7,7 +7,8 @@ export const collections = {
   CAREGIVERS:"caregivers",
   FROMDATA:"fromData",
   BOOKING:"bookingServices",
-  BOOKINGCAREGIVERS:"bookingcaregivers"
+  BOOKINGCAREGIVERS:"bookingcaregivers",
+  REVIEWCAREGIVERS: "reviewCaregivers"
 };
 
 const { MongoClient, ServerApiVersion } = require("mongodb");

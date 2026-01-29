@@ -50,4 +50,35 @@ export const caregiverSingleData = async (query) => {
   }
 };
 
+export const saveCaregiverReview = async (data) => {
+  const result = await dbConnect(collections.REVIEWCAREGIVERS).insertOne(data);
+  return { insertedId: result.insertedId.toString() };
+};
 
+export const getCaregiverReviews = async (caregiverId) => {
+  try {
+    // Create a flexible query for caregiverId to match either String or ObjectId
+    let caregiverIdCondition = { caregiverId: caregiverId };
+    if (caregiverId && ObjectId.isValid(caregiverId)) {
+      caregiverIdCondition = {
+        $or: [
+          { caregiverId: caregiverId },
+          { caregiverId: new ObjectId(caregiverId) },
+        ],
+      };
+    }
+
+    const result = await dbConnect(collections.REVIEWCAREGIVERS)
+      .find(caregiverIdCondition)
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return result.map((review) => ({
+      ...review,
+      _id: review._id.toString(),
+    }));
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return [];
+  }
+};

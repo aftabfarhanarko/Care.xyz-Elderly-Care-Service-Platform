@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import { caregiverDataSaved } from "@/actions/serverData/caregiverAPi";
 import { useQueryClient } from "@tanstack/react-query";
 
-const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
+const CaregiversModal = ({ isOpen, onClose, caregiver, onBookingSuccess }) => {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
@@ -151,7 +151,7 @@ const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
         if (result.isConfirmed) {
           // Here you would typically send the booking data to your backend
           const savedData = {
-            caregiverId: caregiver._id,
+            caregiverId: caregiver._id || caregiver.id,
             caregiverName: caregiver.name,
             caregiverImage: caregiver.image,
             bookerEmail: session?.user?.email,
@@ -168,24 +168,7 @@ const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
           console.log("This Data Saved DB", saveResult);
 
           // Invalidate the booking status query to update the UI immediately
-          queryClient.invalidateQueries(["bookingStatus", caregiver._id]);
-
-          swalWithBootstrapButtons.fire({
-            title: "Booking Confirmed!",
-            text: `Your request to book ${caregiver.name} has been submitted successfully.`,
-            icon: "success",
-            customClass: {
-              popup:
-                "rounded-[2rem] dark:bg-gray-800 dark:text-white p-0 overflow-hidden",
-              confirmButton:
-                "bg-rose-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-rose-700 transition-all shadow-lg hover:shadow-rose-500/30",
-              title:
-                "text-2xl font-bold text-gray-900 dark:text-white mb-2 pt-8",
-              htmlContainer:
-                "text-center px-8 pb-8 text-gray-600 dark:text-gray-300",
-              actions: "pb-8 px-8 w-full justify-center",
-            },
-          });
+          queryClient.invalidateQueries(["bookingStatus", caregiver._id || caregiver.id]);
 
           setFormData({
             days: 1,
@@ -195,6 +178,10 @@ const CaregiversModal = ({ isOpen, onClose, caregiver }) => {
           });
 
           onClose();
+          
+          if (onBookingSuccess) {
+            onBookingSuccess();
+          }
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: "Cancelled",

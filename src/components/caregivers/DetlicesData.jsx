@@ -13,13 +13,30 @@ import {
   ArrowLeft,
   DollarSign,
   Heart,
+  User,
+  Quote,
+  MessageSquare,
 } from "lucide-react";
 import React, { useState } from "react";
 import CaregiversModal from "@/components/modal/CaregiversModal";
+import ReviewModal from "@/components/modal/ReviewModal";
+import { useQuery } from "@tanstack/react-query";
+import { getCaregiverReviews } from "@/actions/serverData/caregiverAPi";
 
 const DetlicesData = ({ caregiver, bookingStatus }) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  const { data: reviews } = useQuery({
+    queryKey: ["caregiverReviews", caregiver?._id || caregiver?.id],
+    queryFn: () => getCaregiverReviews(caregiver?._id || caregiver?.id),
+    enabled: !!(caregiver?._id || caregiver?.id),
+  });
+
+  const handleBookingSuccess = () => {
+    setIsReviewModalOpen(true);
+  };
 
   if (!caregiver) {
     return (
@@ -225,6 +242,78 @@ const DetlicesData = ({ caregiver, bookingStatus }) => {
                   Recent Reviews
                 </h2>
               </div>
+
+              <div className="space-y-6">
+                {reviews?.length > 0 ? (
+                  reviews.map((review) => (
+                    <div
+                      key={review._id}
+                      className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative group hover:shadow-lg transition-all duration-300"
+                    >
+                      <Quote className="absolute top-6 right-6 w-8 h-8 text-rose-200 dark:text-rose-900/30 rotate-180" />
+                      
+                      <div className="flex items-start justify-between mb-4 relative z-10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-800 p-1 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <div className="w-full h-full rounded-full overflow-hidden relative">
+                              {review.reviewerImage ? (
+                                <img
+                                  src={review.reviewerImage}
+                                  alt={review.reviewerName}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                  <User className="w-6 h-6 text-gray-400" />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-900 dark:text-white text-lg">
+                              {review.reviewerName}
+                            </h4>
+                            <p className="text-sm text-gray-500 font-medium">
+                              {new Date(review.createdAt).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < review.rating
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-gray-200 dark:text-gray-600"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed italic relative z-10 pl-2 border-l-4 border-rose-200 dark:border-rose-900/50">
+                        "{review.description}"
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 bg-gray-50 dark:bg-white/5 rounded-3xl border border-dashed border-gray-200 dark:border-white/10">
+                    <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <MessageSquare className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                      No Reviews Yet
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Be the first to share your experience with {caregiver.name.split(" ")[0]}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>
@@ -233,6 +322,13 @@ const DetlicesData = ({ caregiver, bookingStatus }) => {
       <CaregiversModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        caregiver={caregiver}
+        onBookingSuccess={handleBookingSuccess}
+      />
+
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
         caregiver={caregiver}
       />
     </div>

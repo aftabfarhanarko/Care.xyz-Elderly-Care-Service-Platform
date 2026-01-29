@@ -26,15 +26,15 @@ const CaregiverDetailsPage = ({ caregiver: serverCaregiver }) => {
     }
   }, [params?.id, serverCaregiver]);
 
-   const { data: bookingStatus } = useQuery({
-    queryKey: ["bookingStatus", serverCaregiver?._id ],
+  const { data: bookingStatus } = useQuery({
+    queryKey: ["bookingStatus", caregiver?._id || caregiver?.id],
     queryFn: async () => {
-      const query = { caregiverId: serverCaregiver?._id  };
+      const query = { caregiverId: caregiver?._id || caregiver?.id };
       const result = await caregiverSingleData(query);
       console.log("Single Data Result:", result);
       return result;
     },
-    enabled: !!(serverCaregiver?._id),
+    enabled: !!(caregiver?._id || caregiver?.id),
   });
 
   if (loading) {

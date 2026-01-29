@@ -1,4 +1,5 @@
 # 🏥 Care.xyz (Care.IO)
+
 ### Baby Sitting & Elderly Care Service Platform
 
 ## Live Demo:[Care.xyz](https://baby-sitting-pi.vercel.app)
@@ -14,7 +15,6 @@ The application ensures transparency and trust by allowing users to view detaile
 Care.xyz is developed using **React and Next.js (JavaScript)** with a scalable and modular architecture. The system includes secure authentication, private route protection, dynamic booking workflows, and automated email invoice delivery. The project follows modern web development best practices, ensuring responsiveness, security, and future extensibility.
 
 The ultimate vision of Care.xyz is to make caregiving **simple, dependable, and stress-free**, empowering families to focus on what truly matters—caring for their loved ones with confidence and peace of mind.
-
 
 ---
 
@@ -34,18 +34,21 @@ Users can book services based on **duration, location, and service type** with t
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - React
 - Next.js (App Router)
 - JavaScript (ES6+)
 - CSS / Tailwind CSS (optional)
 
 ### Backend
+
 - Next.js API Routes
 - Authentication system
 - Booking management
 - Email invoice service
 
 ### Optional Integrations
+
 - Stripe Payment Gateway
 - Admin Dashboard
 
@@ -81,22 +84,26 @@ Users can book services based on **duration, location, and service type** with t
 ## 🧭 Pages & Routes
 
 ### 🏠 Home Page (`/`)
+
 - Banner / Slider
 - About Section
 - Services Overview
 - Testimonials / Success Metrics
 
 ### 🧸 Service Detail Page (`/services/:service_id`)
+
 - Detailed service information
 - Book Service button
 
 ### 📅 Booking Page (`/booking/:service_id`) 🔒
+
 - Select duration
 - Location & address input
 - Dynamic total cost
 - Confirm booking
 
 ### 🔐 Authentication
+
 - Login Page (`/auth/login`)
 - Registration Page (`/auth/register`)
   - NID No
@@ -106,6 +113,7 @@ Users can book services based on **duration, location, and service type** with t
   - Password validation (6+ characters, uppercase & lowercase)
 
 ### 📋 My Bookings (`/my-bookings`) 🔒
+
 - Service name
 - Duration
 - Location
@@ -114,6 +122,7 @@ Users can book services based on **duration, location, and service type** with t
 - Cancel booking option
 
 ### ❌ Error Page (`/404`)
+
 - Not Found message
 - Back to Home button
 
@@ -122,6 +131,7 @@ Users can book services based on **duration, location, and service type** with t
 ## 🔒 Private Route Protection
 
 Protected routes:
+
 - `/booking/*`
 - `/my-bookings`
 - `/dashboard/*` (Admin – Optional)
@@ -150,7 +160,6 @@ Logged-in users remain authenticated even after page reload.
 
 ---
 
-
 ---
 
 ## 🧪 Assignment Highlights
@@ -166,6 +175,7 @@ Logged-in users remain authenticated even after page reload.
 ## 📌 Conclusion
 
 Care.xyz is a complete caregiving service platform demonstrating:
+
 - Modern React & Next.js development
 - Secure authentication
 - Dynamic booking system
