@@ -139,7 +139,7 @@ const Banner = () => {
 
             {/* Headline */}
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-7xl font-bold leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 tracking-tight pb-2">
+              <h1 className="text-3xl lg:text-5xl font-bold leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 tracking-tight pb-2">
                 Premium Care <br />
                 For Your Loved Ones
               </h1>

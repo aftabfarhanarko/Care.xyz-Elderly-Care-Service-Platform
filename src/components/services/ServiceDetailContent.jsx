@@ -54,6 +54,7 @@ import ServiceReviewModal from "../modal/ServiceReviewModal";
 import { singleData, getServiceReviews } from "@/actions/serverData/getData";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
 
 const iconMap = {
   Baby,
@@ -101,6 +102,8 @@ const staggerContainer = {
 };
 
 const ServiceDetailContent = ({ service }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeImage, setActiveImage] = useState(0);
   const [isOpenModal, SetIsOpenModal] = useState(false);
   const [isOpenReviewModal, setIsOpenReviewModal] = useState(false);
@@ -179,6 +182,11 @@ const ServiceDetailContent = ({ service }) => {
     : [];
 
   const showModal = () => {
+    if (!session) {
+      const callbackUrl = encodeURIComponent(pathname);
+      router.push(`/login?callbackUrl=${callbackUrl}`);
+      return;
+    }
     SetIsOpenModal(true);
   };
 

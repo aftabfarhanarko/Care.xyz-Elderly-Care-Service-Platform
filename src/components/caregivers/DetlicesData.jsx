@@ -20,13 +20,27 @@ import {
 import React, { useState } from "react";
 import CaregiversModal from "@/components/modal/CaregiversModal";
 import ReviewModal from "@/components/modal/ReviewModal";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
+
 import { useQuery } from "@tanstack/react-query";
 import { getCaregiverReviews } from "@/actions/serverData/caregiverAPi";
 
 const DetlicesData = ({ caregiver, bookingStatus }) => {
   const router = useRouter();
+  const { data: session } = useSession();
+  const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  const handleBookNow = () => {
+    if (!session) {
+      const callbackUrl = encodeURIComponent(pathname);
+      router.push(`/login?callbackUrl=${callbackUrl}`);
+      return;
+    }
+    setIsModalOpen(true);
+  };
 
   const { data: reviews } = useQuery({
     queryKey: ["caregiverReviews", caregiver?._id || caregiver?.id],
@@ -153,7 +167,7 @@ const DetlicesData = ({ caregiver, bookingStatus }) => {
                 </button>
               ) : (
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={handleBookNow}
                   className="w-full mt-6 bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-rose-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   <Calendar className="w-5 h-5" />
