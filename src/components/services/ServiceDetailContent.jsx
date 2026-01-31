@@ -634,6 +634,42 @@ const ServiceDetailContent = ({ service }) => {
         onClose={() => setIsOpenReviewModal(false)}
         service={service}
       />
+
+      {/* Mobile Fixed Booking Bar - Visible only on small/medium screens */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 p-4 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] pb-safe">
+        <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Total</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-extrabold text-gray-900 dark:text-white">
+                <CountUp end={service.priceVal} duration={1} separator="," />
+              </span>
+              <span className="text-gray-500 dark:text-gray-400 font-medium text-sm">/hr</span>
+            </div>
+          </div>
+          <button
+            onClick={showModal}
+            disabled={bookingStatus?.length > 0}
+            className={`flex-1 max-w-xs py-3 px-6 rounded-xl font-bold text-base shadow-lg flex items-center justify-center gap-2 transition-all duration-300 ${
+              bookingStatus?.length > 0 
+              ? "bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-gray-700" 
+              : "bg-gradient-to-r from-rose-600 to-purple-600 text-white active:scale-95"
+            }`}
+          >
+            {bookingStatus?.length > 0 ? (
+                <>
+                    <CheckCircle className="w-5 h-5" />
+                    <span>Booked</span>
+                </>
+            ) : (
+                <>
+                    <Calendar className="w-5 h-5" />
+                    <span>Book Now</span>
+                </>
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
