@@ -1,16 +1,33 @@
-
 "use client";
 import Link from "next/link";
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Star, BookOpen, Moon, Plane, Coffee } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  Star,
+  BookOpen,
+  Moon,
+  Plane,
+  Coffee,
+  CheckCircle,
+  Shield,
+  Clock,
+  Heart,
+  Award,
+  MapPin,
+  Calendar,
+  MessageCircle,
+  Sparkles,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
+      staggerChildren: 0.15,
     },
   },
 };
@@ -19,72 +36,196 @@ const scaleIn = {
   hidden: { scale: 0.9, opacity: 0 },
   visible: { scale: 1, opacity: 1, transition: { duration: 0.5 } },
 };
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
+const slideIn = {
+  hidden: { x: -20, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.6 } },
+};
+
 const Diffrent = () => {
+  const [activeFilter, setActiveFilter] = useState("All");
+
   const occasions = [
-    { title: "Date Night", icon: Moon, color: "bg-indigo-100 text-indigo-600" },
+    {
+      title: "Date Night",
+      icon: Moon,
+      color: "bg-indigo-100 text-indigo-600",
+      gradient: "from-indigo-500 to-purple-600",
+      description: "Evening care for your special moments",
+      popular: true,
+    },
     {
       title: "After School",
       icon: BookOpen,
       color: "bg-orange-100 text-orange-600",
+      gradient: "from-orange-500 to-red-600",
+      description: "Homework help & activities",
+      popular: false,
     },
-    { title: "Travel Nanny", icon: Plane, color: "bg-sky-100 text-sky-600" },
+    {
+      title: "Travel Nanny",
+      icon: Plane,
+      color: "bg-sky-100 text-sky-600",
+      gradient: "from-sky-500 to-blue-600",
+      description: "Care on the go",
+      popular: false,
+    },
     {
       title: "Overnight",
       icon: Coffee,
       color: "bg-purple-100 text-purple-600",
+      gradient: "from-purple-500 to-pink-600",
+      description: "24/7 trusted support",
+      popular: true,
     },
   ];
+
   const topCaregivers = [
     {
       name: "Sarah M.",
       role: "Certified Nanny",
       rating: 4.9,
       reviews: 124,
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
+      image:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
+      verified: true,
+      yearsExp: 8,
+      location: "New York, NY",
+      hourlyRate: 25,
+      badges: ["Background Checked", "CPR Certified", "Top Rated"],
+      availability: "Available Now",
+      specialties: ["Newborn Care", "Twins", "Special Needs"],
+      responseTime: "< 2 hours",
+      featured: true,
     },
     {
       name: "David R.",
       role: "Elderly Specialist",
       rating: 5.0,
       reviews: 89,
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+      verified: true,
+      yearsExp: 12,
+      location: "Los Angeles, CA",
+      hourlyRate: 30,
+      badges: ["Medical Training", "Background Checked", "Elite"],
+      availability: "Available This Week",
+      specialties: ["Dementia Care", "Post-Surgery", "Companionship"],
+      responseTime: "< 1 hour",
+      featured: true,
     },
     {
       name: "Jessica T.",
       role: "Pediatric Nurse",
       rating: 4.8,
       reviews: 215,
-      image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400",
+      image:
+        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400",
+      verified: true,
+      yearsExp: 6,
+      location: "Chicago, IL",
+      hourlyRate: 28,
+      badges: ["RN Licensed", "Background Checked", "Top Rated"],
+      availability: "Available Now",
+      specialties: ["Infant Care", "Medical Needs", "Night Nurse"],
+      responseTime: "< 3 hours",
+      featured: false,
     },
     {
       name: "Maria G.",
       role: "Special Needs Care",
       rating: 4.9,
       reviews: 156,
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+      image:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+      verified: true,
+      yearsExp: 10,
+      location: "Houston, TX",
+      hourlyRate: 32,
+      badges: ["Certified Specialist", "Background Checked", "Elite"],
+      availability: "Available Tomorrow",
+      specialties: ["Autism", "Behavioral Support", "Therapy Integration"],
+      responseTime: "< 2 hours",
+      featured: true,
     },
   ];
 
+
+  const stats = [
+    { icon: Users, value: "50K+", label: "Trusted Caregivers" },
+    { icon: Shield, value: "100%", label: "Background Checked" },
+    { icon: Star, value: "4.9", label: "Average Rating" },
+    { icon: TrendingUp, value: "98%", label: "Satisfaction Rate" },
+  ];
+
   return (
-    <div>
-      {/* 4.2 Occasions Section */}
-      <section className="py-24 bg-white">
+    <div className="relative overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full blur-3xl opacity-30 -z-10"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-100 to-indigo-100 rounded-full blur-3xl opacity-30 -z-10"></div>
+
+      {/* Stats Bar */}
+      <section className="py-12 bg-gradient-to-r from-rose-50 via-pink-50 to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 pb-1">
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            {stats.map((stat, i) => (
+              <motion.div
+                key={i}
+                variants={fadeInUp}
+                className="text-center group cursor-pointer"
+              >
+                <div className="inline-flex items-center justify-center w-14 h-14 bg-white rounded-2xl shadow-lg mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <stat.icon className="w-7 h-7 text-rose-600" />
+                </div>
+                <div className="text-3xl font-bold text-gray-900 mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Occasions Section - Enhanced */}
+      <section className="py-24 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 rounded-full mb-4">
+              <Sparkles className="w-4 h-4 text-rose-600" />
+              <span className="text-sm font-semibold text-rose-600">
+                Premium Care Options
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-4">
               Care for Every Moment
             </h2>
-            <p className="text-lg text-gray-600 mt-4">
-              Whatever your schedule, we have a sitter for that.
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Whatever your schedule, we have a sitter for that. Professional,
+              vetted, and ready to help.
             </p>
-          </div>
+          </motion.div>
+
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -94,42 +235,93 @@ const Diffrent = () => {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-6 rounded-2xl border border-gray-100 hover:border-rose-100 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer"
+                className="relative group cursor-pointer"
               >
-                <div
-                  className={`w-12 h-12 mx-auto ${item.color} rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                >
-                  <item.icon className="w-6 h-6" />
+                <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl blur-xl -z-10 from-rose-200 to-pink-200"></div>
+                <div className="relative p-8 rounded-3xl border-2 border-gray-100 bg-white hover:border-transparent hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                  {/* Gradient Background on Hover */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                  ></div>
+
+                  {/* Popular Badge */}
+                  {item.popular && (
+                    <div className="absolute top-4 right-4">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full">
+                        <Star className="w-3 h-3 fill-current" />
+                        Popular
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="relative">
+                    <div
+                      className={`w-16 h-16 ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}
+                    >
+                      <item.icon className="w-8 h-8" />
+                    </div>
+                    <h3 className="font-bold text-xl text-gray-900 mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      {item.description}
+                    </p>
+                    <div className="flex items-center text-rose-600 font-semibold text-sm group-hover:translate-x-2 transition-transform duration-300">
+                      Learn More
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </div>
+                  </div>
                 </div>
-                <h3 className="font-bold text-gray-900">{item.title}</h3>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* 4.5 Featured Caregivers Section */}
-      <section className="py-24 bg-white">
+      {/* Featured Caregivers Section - Premium */}
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <span className="font-semibold tracking-wide uppercase text-sm text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600">
-                Top Rated
-              </span>
-              <h2 className="mt-2 text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 pb-1">
-                Meet Our Caregivers
-              </h2>
-            </div>
-            <Link
-              href="/caregivers"
-              className="hidden md:flex items-center text-rose-600 font-semibold hover:text-rose-700"
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={slideIn}
             >
-              View All Caregivers <ArrowRight className="w-5 h-5 ml-2" />
-            </Link>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-50 to-pink-50 rounded-full mb-3">
+                <Award className="w-4 h-4 text-rose-600" />
+                <span className="text-sm font-semibold text-rose-600">
+                  Premium Caregivers
+                </span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-3">
+                Meet Our Top Caregivers
+              </h2>
+              <p className="text-lg text-gray-600 max-w-xl">
+                Handpicked professionals with verified credentials and
+                outstanding reviews
+              </p>
+            </motion.div>
+
+            {/* <div className="flex flex-wrap gap-3">
+              {filters.map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
+                    activeFilter === filter
+                      ? "bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg scale-105"
+                      : "bg-white text-gray-700 border border-gray-200 hover:border-rose-300 hover:shadow-md"
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div> */}
           </div>
 
           <motion.div
-            className="grid md:grid-cols-4 gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -141,27 +333,133 @@ const Diffrent = () => {
                 variants={fadeInUp}
                 className="group relative"
               >
-                <div
-                  className={`aspect-[3/4]  rounded-2xl mb-4 overflow-hidden relative`}
-                >
-                  <img src={caregiver.image}></img>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900">
-                  {caregiver.name}
-                </h3>
-                <p className="text-rose-600 font-medium text-sm mb-2">
-                  {caregiver.role}
-                </p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                  <span className="font-bold text-gray-900 mr-1">
-                    {caregiver.rating}
-                  </span>
-                  <span>({caregiver.reviews} reviews)</span>
+                <div className="relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-rose-200">
+                  {/* Featured Badge */}
+                  {caregiver.featured && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs font-bold rounded-full shadow-lg">
+                        <Sparkles className="w-3 h-3" />
+                        Featured
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Image Container */}
+                  <div className="aspect-[3/4] relative overflow-hidden bg-gray-100">
+                    <img
+                      src={caregiver.image}
+                      alt={caregiver.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    {/* Availability Badge */}
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {caregiver.availability}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-xl font-bold text-gray-900">
+                            {caregiver.name}
+                          </h3>
+                          {caregiver.verified && (
+                            <CheckCircle className="w-5 h-5 text-blue-500 fill-current" />
+                          )}
+                        </div>
+                        <p className="text-rose-600 font-semibold text-sm">
+                          {caregiver.role}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                      <div className="flex items-center">
+                        <Star className="w-5 h-5 text-amber-400 fill-current" />
+                        <span className="font-bold text-gray-900 ml-1.5 text-lg">
+                          {caregiver.rating}
+                        </span>
+                      </div>
+                      <span className="text-gray-500 text-sm">
+                        ({caregiver.reviews} reviews)
+                      </span>
+                    </div>
+
+                    {/* Details */}
+                    <div className="space-y-3 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <Award className="w-4 h-4 text-rose-500" />
+                        <span className="font-medium">
+                          {caregiver.yearsExp} years experience
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <MapPin className="w-4 h-4 text-rose-500" />
+                        <span>{caregiver.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <Clock className="w-4 h-4 text-rose-500" />
+                        <span>Responds in {caregiver.responseTime}</span>
+                      </div>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {caregiver.badges.slice(0, 2).map((badge, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-semibold rounded-full"
+                        >
+                          {badge}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Price & CTA */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div>
+                        <span className="text-2xl font-bold text-gray-900">
+                          ${caregiver.hourlyRate}
+                        </span>
+                        <span className="text-gray-500 text-sm">/hour</span>
+                      </div>
+                      <button className="px-6 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" />
+                        Contact
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* View All Button */}
+          <motion.div
+            className="text-center mt-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={scaleIn}
+          >
+            <Link
+              href="/caregivers"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
+            >
+              <Users className="w-5 h-5" />
+              View All {topCaregivers.length * 12}+ Caregivers
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </motion.div>
         </div>
       </section>
