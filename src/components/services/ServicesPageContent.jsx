@@ -235,13 +235,13 @@ export default function ServicesPageContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-sm font-bold tracking-wide uppercase mb-6 border border-rose-100 dark:border-rose-500/20 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-sm font-semibold tracking-wide uppercase mb-6 border border-rose-100 dark:border-rose-500/20 shadow-sm">
               <Sparkles className="w-4 h-4 fill-current" />
               Premium Care Services
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight leading-tight">
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 mb-6 tracking-tight leading-tight">
               Professional Care <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+              <span className="text-rose-600 dark:text-rose-500">
                 Tailored For You
               </span>
             </h1>

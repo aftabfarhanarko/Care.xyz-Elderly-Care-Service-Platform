@@ -136,7 +136,7 @@ const DetlicesData = ({ caregiver, bookingStatus }) => {
                 </div>
 
                 <div className="text-center mt-10 mb-6 px-4 w-full">
-                  <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                  <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 tracking-tight mb-2">
                     {caregiver.name}
                   </h1>
                   <div className="flex items-center justify-center gap-2 mb-4">

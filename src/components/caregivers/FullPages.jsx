@@ -59,13 +59,13 @@ const FullPages = ({ caregivers }) => {
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-8">
           <div className="space-y-4 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-bold tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-sm font-semibold tracking-wider uppercase">
               <Star className="w-3.5 h-3.5 fill-current" />
               Top Rated Professionals
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 leading-tight">
               Find Your Perfect{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600">
+              <span className="text-rose-600 dark:text-rose-500">
                 Caregiver
               </span>
             </h2>

@@ -139,7 +139,7 @@ const AllFile = () => {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3"
+              className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-3"
             >
               Welcome to Care.xyz
             </motion.p>
@@ -147,10 +147,10 @@ const AllFile = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6"
+              className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6"
             >
               We make a{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+              <span className="text-rose-600">
                 Difference
               </span>{" "}
               in your lives
@@ -261,12 +261,12 @@ const AllFile = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-2 block">
+              <span className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-2 block">
                 Value for Life
               </span>
-              <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-8">
                 Expert Care{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+                <span className="text-rose-600">
                   of the Elderly
                 </span>
               </h2>
@@ -417,12 +417,12 @@ const AllFile = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="font-bold text-gray-500 tracking-[0.2em] uppercase text-sm mb-2 block">
+              <span className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-2 block">
                 Ageing Gracefully
               </span>
-              <h2 className="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6 leading-tight">
                 Caring is a <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+                <span className="text-rose-600">
                   way of life...
                 </span>
               </h2>
@@ -478,14 +478,14 @@ const AllFile = () => {
                   <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
                     <GraduationCap className="w-6 h-6 text-rose-600" />
                   </div>
-                  <span className="text-rose-600 font-bold tracking-wide uppercase text-sm">
+                  <span className="text-rose-600 font-semibold tracking-wide uppercase text-sm">
                     Better Guidance
                   </span>
                 </div>
 
-                <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
+                <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 leading-tight mb-6">
                   Choose The Best & Make The Child{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+                  <span className="text-rose-600">
                     Smart
                   </span>
                 </h2>
@@ -590,7 +590,7 @@ const AllFile = () => {
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3"
+              className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-3"
             >
               FAQs
             </motion.p>
@@ -598,10 +598,10 @@ const AllFile = () => {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-extrabold text-gray-900"
+              className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600"
             >
               Frequently Asked{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+              <span className="text-rose-600">
                 Questions
               </span>
             </motion.h2>

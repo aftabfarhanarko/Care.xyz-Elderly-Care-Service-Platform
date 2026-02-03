@@ -17,7 +17,7 @@ const Header = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 mb-6">
                 Our Mission to Provide <br />
                 <span className="text-rose-600 dark:text-rose-500">
                   Exceptional Care

@@ -259,7 +259,7 @@ const ServiceDetailContent = ({ service }) => {
                         </span>
                       )}
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight mb-3">
+                    <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 leading-tight mb-3">
                       {service.name}
                     </h1>
                     <div className="flex items-center gap-4 text-sm">

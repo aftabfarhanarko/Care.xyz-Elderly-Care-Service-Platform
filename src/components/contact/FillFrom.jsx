@@ -134,9 +134,9 @@ const FillFrom = () => {
               <Sparkles className="w-4 h-4" />
               <span>Contact Support</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 leading-tight">
               Let's Start a{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+              <span className="text-rose-600 dark:text-rose-500">
                 Conversation
               </span>
             </h1>

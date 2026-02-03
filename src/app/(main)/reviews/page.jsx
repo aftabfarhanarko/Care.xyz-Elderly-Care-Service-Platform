@@ -14,12 +14,12 @@ const Reviewspage = async () => {
       {/* Main Page Header */}
       <section className="bg-white pt-32 pb-16 px-4 sm:px-6 lg:px-8 shadow-sm">
         <div className="max-w-7xl mx-auto text-center">
-          <span className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3 block">
+          <span className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-3 block">
             Testimonials
           </span>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-6">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6">
             What Our Community{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+            <span className="text-rose-600">
               Says
             </span>
           </h1>
@@ -34,7 +34,7 @@ const Reviewspage = async () => {
         {/* Service Reviews Section */}
         <section>
           <div className="mb-12 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-4">
               Service Experiences
             </h2>
             <div className="h-1.5 w-24 bg-gradient-to-r from-rose-600 to-purple-600 rounded-full mx-auto md:mx-0"></div>
@@ -45,7 +45,7 @@ const Reviewspage = async () => {
         {/* Caregiver Reviews Section */}
         <section>
           <div className="mb-12 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-4">
               Caregiver Feedback
             </h2>
             <div className="h-1.5 w-24 bg-gradient-to-r from-rose-600 to-purple-600 rounded-full mx-auto md:mx-0"></div>
