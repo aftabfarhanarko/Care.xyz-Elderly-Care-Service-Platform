@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
   Mail,
@@ -22,9 +22,28 @@ import { signIn } from "next-auth/react";
 import { imageUpload } from "@/utils/imagesUpDB";
 // import { savedUserData } from "@/actions/userData/userDbFUnctions";
 
-const fadeInUp = {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    },
+  },
 };
 
 const RegisterFrom = () => {
@@ -133,7 +152,6 @@ const RegisterFrom = () => {
 
       console.log("Form Data:", submitData);
 
-      // const result = await savedUserData(submitData);
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -158,11 +176,9 @@ const RegisterFrom = () => {
         if (loginResult?.ok) {
           router.push("/");
         } else {
-          // Fallback if auto-login fails (shouldn't happen usually)
           router.push("/login");
         }
 
-        // Reset form
         setFormData({
           name: "",
           email: "",
@@ -192,92 +208,116 @@ const RegisterFrom = () => {
   };
 
   return (
-    <div className="min-h-screen pt-30 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen pt-30 flex flex-col justify-center py-12 px-4 lg:px-8 relative overflow-hidden bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-rose-950/20 dark:to-gray-900">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full bg-rose-300/20 blur-[100px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            x: [0, 50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full bg-purple-300/20 blur-[100px]"
+        />
+      </div>
+
       <motion.div
         initial="hidden"
         animate="visible"
-        variants={fadeInUp}
+        variants={containerVariants}
         className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <div className="flex justify-center mb-6">
-          <motion.div
-            className="relative"
-            animate={{
-              rotate: [0, 5, -5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <Sparkles className="h-12 w-12 text-rose-500" />
-            <div className="absolute inset-0 blur-xl bg-rose-500/50"></div>
-          </motion.div>
-        </div>
+        <motion.div
+          variants={itemVariants}
+          className="flex justify-center mb-6"
+        >
+          <div className="relative">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 blur-lg opacity-70"
+            />
+            <div className="relative bg-white dark:bg-gray-800 p-3 rounded-full shadow-xl">
+              <Sparkles className="h-8 w-8 text-rose-600" />
+            </div>
+          </div>
+        </motion.div>
 
-        <h2 className="text-center text-4xl font-bold bg-gradient-to-r from-white via-rose-200 to-white bg-clip-text text-transparent">
+        <motion.h2
+          variants={itemVariants}
+          className="text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
           Create Account
-        </h2>
-        <p className="mt-3 text-center text-sm text-gray-400">
-          Already have an account?{" "}
+        </motion.h2>
+        <motion.p
+          variants={itemVariants}
+          className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400"
+        >
+          Join us today! Already have an account?{" "}
           <a
             href="/login"
-            className="font-semibold text-rose-400 hover:text-rose-300 transition-colors"
+            className="font-semibold text-rose-600 hover:text-rose-500 transition-colors"
           >
-            Sign in now
+            Sign in
           </a>
-        </p>
-      </motion.div>
+        </motion.p>
 
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ delay: 0.15 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
-      >
-        <div className="bg-gray-800/40 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-gray-700/50 relative overflow-hidden">
-          {/* Glass effect overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
-
-          <div className="space-y-5 relative z-10">
-            {errors.submit && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg"
-              >
-                <p className="text-sm text-red-400">{errors.submit}</p>
-              </motion.div>
-            )}
+        <motion.div
+          variants={itemVariants}
+          className="mt-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl py-10 px-6 shadow-2xl rounded-[2.5rem] sm:px-12 border border-white/50 dark:border-gray-700/50"
+        >
+          <div className="space-y-6">
+            <AnimatePresence>
+              {errors.submit && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="p-3 bg-red-50 text-red-600 border border-red-200 rounded-xl text-sm text-center font-medium"
+                >
+                  {errors.submit}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Profile Image Upload */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-3 text-center">
-                Profile Picture (Optional)
+            <div className="flex flex-col items-center">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                Profile Picture
               </label>
 
-              {imagePreview ? (
-                <div className="relative w-28 h-28 mx-auto group">
-                  <img
-                    src={imagePreview}
-                    alt="Profile preview"
-                    className="w-full h-full object-cover rounded-full border-4 border-rose-500 shadow-lg shadow-rose-500/50"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-all shadow-lg hover:scale-110"
+              <div className="relative group">
+                {imagePreview ? (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="relative w-24 h-24"
                   >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex justify-center">
-                  <label className="w-28 h-28 flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-full cursor-pointer hover:border-rose-500 transition-all bg-gray-900/50 hover:bg-gray-900/70 group">
-                    <Upload className="h-7 w-7 text-gray-400 group-hover:text-rose-400 transition-colors mb-1" />
-                    <span className="text-xs text-gray-500 group-hover:text-gray-300">
+                    <img
+                      src={imagePreview}
+                      alt="Profile preview"
+                      className="w-full h-full object-cover rounded-full border-4 border-rose-100 dark:border-rose-900/50 shadow-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-1 -right-1 bg-white text-red-500 rounded-full p-1 shadow-lg hover:bg-red-50 transition-all border border-gray-100"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </motion.div>
+                ) : (
+                  <label className="w-24 h-24 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-full cursor-pointer hover:border-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all group bg-gray-50 dark:bg-gray-900/50">
+                    <Upload className="h-6 w-6 text-gray-400 group-hover:text-rose-500 transition-colors" />
+                    <span className="text-[10px] text-gray-400 mt-1 font-medium group-hover:text-rose-500">
                       Upload
                     </span>
                     <input
@@ -287,103 +327,65 @@ const RegisterFrom = () => {
                       onChange={handleImageChange}
                     />
                   </label>
-                </div>
-              )}
-
+                )}
+              </div>
               {errors.image && (
-                <p className="mt-2 text-sm text-red-400 text-center">
+                <p className="mt-1 text-xs text-red-500 font-medium">
                   {errors.image}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Full Name
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
+            <div className="space-y-4">
+              {[
+                {
+                  name: "name",
+                  label: "Full Name",
+                  type: "text",
+                  placeholder: "John Doe",
+                  icon: User,
+                },
+                {
+                  name: "email",
+                  label: "Email Address",
+                  type: "email",
+                  placeholder: "you@example.com",
+                  icon: Mail,
+                },
+                {
+                  name: "contact",
+                  label: "Contact Number",
+                  type: "tel",
+                  placeholder: "+880 1234 567890",
+                  icon: Phone,
+                },
+                {
+                  name: "nid",
+                  label: "NID Number",
+                  type: "text",
+                  placeholder: "NID Number",
+                  icon: FileText,
+                },
+              ].map((field) => (
+                <div key={field.name} className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <field.icon className="h-5 w-5 text-gray-400 group-focus-within:text-rose-500 transition-colors" />
+                  </div>
+                  <input
+                    name={field.name}
+                    type={field.type}
+                    required
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all duration-200"
+                    placeholder={field.placeholder}
+                  />
                 </div>
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
+              ))}
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Email Address
-              </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Contact Number
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
-                </div>
-                <input
-                  name="contact"
-                  type="tel"
-                  required
-                  value={formData.contact}
-                  onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
-                  placeholder="+880 1234 567890"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                NID Number
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FileText className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
-                </div>
-                <input
-                  name="nid"
-                  type="text"
-                  required
-                  value={formData.nid}
-                  onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
-                  placeholder="NID Number"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Password
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
+                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-rose-500 transition-colors" />
                 </div>
                 <input
                   name="password"
@@ -391,13 +393,13 @@ const RegisterFrom = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-12 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all duration-200"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-rose-400 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-rose-500 transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -407,24 +409,28 @@ const RegisterFrom = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+                <p className="text-xs text-red-500 font-medium ml-1">
+                  {errors.password}
+                </p>
               )}
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className={`w-full relative overflow-hidden py-3.5 px-4 rounded-xl font-bold text-white transition-all duration-300 mt-6 flex items-center justify-center gap-2 group ${
+              className={`w-full relative overflow-hidden py-3.5 px-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-rose-500/30 ${
                 loading
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 hover:scale-[1.02] active:scale-[0.98]"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500"
               }`}
             >
               {loading ? (
-                <span className="flex items-center justify-center">
+                <span className="flex items-center">
                   <svg
-                    className="animate-spin h-5 w-5 mr-3"
+                    className="animate-spin h-5 w-5 mr-2"
                     viewBox="0 0 24 24"
                   >
                     <circle
@@ -442,49 +448,48 @@ const RegisterFrom = () => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  Creating account...
+                  Creating...
                 </span>
               ) : (
                 <>
-                  <UserPlus className="w-5 h-5 group-hover:rotate-6 transition-transform" />
+                  <UserPlus className="w-5 h-5" />
                   Create Account
-                  <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
-            </button>
+            </motion.button>
 
-            <div className="relative mt-6">
+            <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-600"></div>
+                <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-gray-800/40 text-gray-400">
+                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500">
                   Or continue with
                 </span>
               </div>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, backgroundColor: "#f8fafc" }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 mt-6 bg-white hover:bg-gray-50 border border-gray-300 rounded-xl font-medium text-gray-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-gray-700 dark:text-gray-200 shadow-sm transition-all"
             >
-              <Chrome className="h-5 w-5" />
+              <img src="/google.png" className="h-5 w-5" alt="Google"></img>
               Continue with Google
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Footer */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 text-center text-xs text-gray-500 relative z-10"
-      >
-        Your data is protected with enterprise-grade encryption
-      </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400"
+        >
+          Your data is protected with enterprise-grade encryption
+        </motion.p>
+      </motion.div>
     </div>
   );
 };
