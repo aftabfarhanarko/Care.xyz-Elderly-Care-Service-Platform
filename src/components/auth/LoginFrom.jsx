@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
   Lock,
@@ -15,9 +15,28 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const fadeInUp = {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    },
+  },
 };
 
 const LoginFrom = () => {
@@ -78,76 +97,90 @@ const LoginFrom = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-rose-950 to-gray-900">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-rose-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-600/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
+    <div className="min-h-screen flex flex-col justify-center py-12 px-4 lg:px-8 relative overflow-hidden bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-rose-950/20 dark:to-gray-900">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full bg-rose-300/20 blur-[100px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            x: [0, 50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full bg-purple-300/20 blur-[100px]"
+        />
       </div>
 
       <motion.div
         initial="hidden"
         animate="visible"
-        variants={fadeInUp}
+        variants={containerVariants}
         className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <div className="flex justify-center mb-6">
-          <motion.div
-            className="relative"
-            animate={{
-              rotate: [0, 5, -5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <Sparkles className="h-12 w-12 text-rose-500" />
-            <div className="absolute inset-0 blur-xl bg-rose-500/50"></div>
-          </motion.div>
-        </div>
+        <motion.div
+          variants={itemVariants}
+          className="flex justify-center mb-6"
+        >
+          <div className="relative">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 blur-lg opacity-70"
+            />
+            <div className="relative bg-white dark:bg-gray-800 p-3 rounded-full shadow-xl">
+              <Sparkles className="h-8 w-8 text-rose-600" />
+            </div>
+          </div>
+        </motion.div>
 
-        <h2 className="text-center text-4xl font-bold bg-gradient-to-r from-white via-rose-200 to-white bg-clip-text text-transparent">
+        <motion.h2
+          variants={itemVariants}
+          className="text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
           Welcome Back
-        </h2>
-        <p className="mt-3 text-center text-sm text-gray-400">
+        </motion.h2>
+        <motion.p
+          variants={itemVariants}
+          className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400"
+        >
           Don't have an account?{" "}
           <a
             href="/register"
-            className="font-semibold text-rose-400 hover:text-rose-300 transition-colors"
+            className="font-semibold text-rose-600 hover:text-rose-500 transition-colors"
           >
             Create one now
           </a>
-        </p>
-      </motion.div>
+        </motion.p>
 
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ delay: 0.15 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
-      >
-        <div className="bg-gray-800/40 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-gray-700/50 relative overflow-hidden">
-          {/* Glass effect overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+        <motion.div
+          variants={itemVariants}
+          className="mt-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl py-10 px-6 shadow-2xl rounded-[2.5rem] sm:px-12 border border-white/50 dark:border-gray-700/50"
+        >
+          <div className="space-y-6">
+            <AnimatePresence>
+              {errorMessage && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="p-3 bg-red-50 text-red-600 border border-red-200 rounded-xl text-sm text-center font-medium"
+                >
+                  {errorMessage}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          <div className="space-y-6 relative z-10">
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Email Address
-              </label>
+            <div className="space-y-4">
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
+                  <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-rose-500 transition-colors" />
                 </div>
                 <input
                   name="email"
@@ -155,19 +188,14 @@ const LoginFrom = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all duration-200"
                   placeholder="you@example.com"
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-2">
-                Password
-              </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-rose-400 transition-colors" />
+                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-rose-500 transition-colors" />
                 </div>
                 <input
                   name="password"
@@ -175,13 +203,13 @@ const LoginFrom = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-12 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all duration-200"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-rose-400 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-rose-500 transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -200,11 +228,11 @@ const LoginFrom = () => {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-600 bg-gray-900/50 text-rose-500 focus:ring-rose-500 focus:ring-offset-0 cursor-pointer"
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-rose-600 focus:ring-rose-500 cursor-pointer"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-300 cursor-pointer"
+                  className="ml-2 block text-sm text-gray-600 dark:text-gray-300 cursor-pointer"
                 >
                   Remember me
                 </label>
@@ -212,36 +240,28 @@ const LoginFrom = () => {
 
               <a
                 href="#"
-                className="text-sm font-medium text-rose-400 hover:text-rose-300 transition-colors"
+                className="text-sm font-medium text-rose-600 hover:text-rose-500 transition-colors"
               >
                 Forgot password?
               </a>
             </div>
 
-            {errorMessage && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg"
-              >
-                <p className="text-sm text-red-400">{errorMessage}</p>
-              </motion.div>
-            )}
-
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className={`w-full relative overflow-hidden py-3.5 px-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 group ${
+              className={`w-full relative overflow-hidden py-3.5 px-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-rose-500/30 ${
                 loading
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 hover:scale-[1.02] active:scale-[0.98]"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500"
               }`}
             >
               {loading ? (
                 <span className="flex items-center justify-center">
                   <svg
-                    className="animate-spin h-5 w-5 mr-3"
+                    className="animate-spin h-5 w-5 mr-2"
                     viewBox="0 0 24 24"
                   >
                     <circle
@@ -263,45 +283,44 @@ const LoginFrom = () => {
                 </span>
               ) : (
                 <>
-                  <LogIn className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                  <LogIn className="w-5 h-5" />
                   Sign In
-                  <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  {/* <ArrowRight className="w-4 h-4" /> */}
                 </>
               )}
-            </button>
+            </motion.button>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-600"></div>
+                <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-gray-800/40 text-gray-400">
+                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500">
                   Or continue with
                 </span>
               </div>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, backgroundColor: "#f8fafc" }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-gray-50 border border-gray-300 rounded-xl font-medium text-gray-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-gray-700 dark:text-gray-200 shadow-sm transition-all"
             >
-              <Chrome className="h-5 w-5" />
+              <img src="/google.png" className="h-5 w-5" alt="Google"></img>
               Continue with Google
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Footer */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 text-center text-xs text-gray-500 relative z-10"
-      >
-        Protected by enterprise-grade security
-      </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400"
+        >
+          Protected by enterprise-grade security
+        </motion.p>
+      </motion.div>
     </div>
   );
 };
