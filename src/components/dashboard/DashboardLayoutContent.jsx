@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -22,6 +22,7 @@ import {
   Sparkles,
   Search,
   ArrowRight,
+  ChevronDown,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,12 +32,122 @@ export const DashboardContext = createContext();
 
 export const useDashboard = () => useContext(DashboardContext);
 
+// Sidebar Item Component for Tree Structure
+const SidebarItem = ({ item, pathname, onClose, level = 0 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const hasChildren = item.children && item.children.length > 0;
+  const isActive = item.href === pathname;
+  const isChildActive =
+    hasChildren && item.children.some((child) => child.href === pathname);
+
+  // Auto-expand if a child is active
+  React.useEffect(() => {
+    if (isChildActive) {
+      setIsOpen(true);
+    }
+  }, [isChildActive]);
+
+  if (hasChildren) {
+    return (
+      <div className="mb-1">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`
+            w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
+            ${
+              isChildActive
+                ? "bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 font-semibold"
+                : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium"
+            }
+          `}
+        >
+          <div className="flex items-center gap-3">
+            <item.icon
+              className={`w-5 h-5 ${
+                isChildActive
+                  ? "text-rose-600 dark:text-rose-400"
+                  : "text-gray-500 dark:text-gray-500 group-hover:text-rose-600 dark:group-hover:text-rose-400"
+              }`}
+            />
+            <span>{item.name}</span>
+          </div>
+          <ChevronRight
+            className={`w-4 h-4 transition-transform duration-200 ${
+              isOpen ? "rotate-90" : ""
+            }`}
+          />
+        </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="relative ml-6 pl-4 border-l border-gray-200 dark:border-gray-800 space-y-1 mt-1 mb-2">
+                {item.children.map((child, index) => (
+                  <SidebarItem
+                    key={index}
+                    item={child}
+                    pathname={pathname}
+                    onClose={onClose}
+                    level={level + 1}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  // Single Item (Leaf)
+  return (
+    <Link
+      href={item.href}
+      onClick={onClose}
+      className={`
+        relative flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200
+        ${
+          isActive
+            ? "bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-lg shadow-rose-500/30 font-semibold"
+            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium"
+        }
+      `}
+    >
+      {/* For nested items, we show a small horizontal line indicator if desired, or just standard indentation */}
+      {level > 0 && (
+        <span
+          className={`absolute -left-[17px] top-1/2 w-3 h-px ${
+            isActive ? "bg-rose-500" : "bg-gray-200 dark:bg-gray-700"
+          }`}
+        />
+      )}
+
+      <item.icon
+        className={`w-5 h-5 flex-shrink-0 ${
+          isActive
+            ? "text-white"
+            : "text-gray-500 dark:text-gray-500 group-hover:text-rose-600 dark:group-hover:text-rose-400"
+        }`}
+      />
+      <span className="flex-grow">{item.name}</span>
+      {isActive && level === 0 && (
+        <ChevronRight className="w-4 h-4 text-white/80" />
+      )}
+    </Link>
+  );
+};
+
 const DashboardLayoutContent = ({ children }) => {
   const pathname = usePathname();
   const { data } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const roleManeze = useRole();
-  const [userRole, setUserRole] = useState(roleManeze || "user");
+  const [userRole, setUserRole] = useState(roleManeze);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   // Sync context state with fetched role
@@ -46,49 +157,77 @@ const DashboardLayoutContent = ({ children }) => {
     }
   }, [roleManeze]);
 
-  console.log("Current Dashboard Role:", roleManeze);
+  const navItems = useMemo(() => {
+    if (!userRole) return null;
 
-  const navItems =
-    roleManeze === "user"
-      ? [
-          { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-          {
-            name: "Services Bookings",
-            href: "/dashboard/bookings",
-            icon: Calendar,
-          },
-          {
-            name: "Caregivers Booking",
-            href: "/dashboard/favorites",
-            icon: Heart,
-          },
-          // { name: "All Users", href: "/dashboard/users", icon: Users }, // Hidden for regular users
+    const commonAccount = [
+      { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Settings", href: "/dashboard/settings", icon: Settings },
+    ];
 
-          { name: "Profile", href: "/dashboard/profile", icon: User },
+    if (userRole === "user") {
+      return [
+        {
+          name: "Bookings",
+          icon: Calendar,
+          children: [
+            {
+              name: "Services Bookings",
+              href: "/dashboard/bookings",
+              icon: Calendar,
+            },
+            {
+              name: "Caregivers Booking",
+              href: "/dashboard/favorites",
+              icon: Heart,
+            },
+          ],
+        },
+        {
+          name: "Account",
+          icon: User,
+          children: commonAccount,
+        },
+      ];
+    } else {
+      // Admin
+      const managementChildren = [
+        // { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+        {
+          name: "My Caregivers",
+          href: "/dashboard/mycaregiver",
+          icon: Calendar,
+        },
+        { name: "My Services", href: "/dashboard/services", icon: Briefcase },
+      ];
+      if (userRole === "admin") {
+        managementChildren.push({
+          name: "All Users",
+          href: "/dashboard/users",
+          icon: Users,
+        });
+      }
 
-          // { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
-          { name: "Settings", href: "/dashboard/settings", icon: Settings },
-        ]
-      : [
-          { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-          {
-            name: "My Caregivers",
-            href: "/dashboard/mycaregiver",
-            icon: Calendar,
-          },
-          { name: "My Services", href: "/dashboard/services", icon: Briefcase },
-          { name: "Profile", href: "/dashboard/profile", icon: User },
-          {
-            name: "Messages",
-            href: "/dashboard/messages",
-            icon: MessageSquare,
-          },
-          // Only show All Users if role is admin
-          ...(roleManeze === "admin"
-            ? [{ name: "All Users", href: "/dashboard/users", icon: Users }]
-            : []),
-          { name: "Settings", href: "/dashboard/settings", icon: Settings },
-        ];
+      return [
+        { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+        {
+          name: "Management",
+          icon: Briefcase,
+          children: managementChildren,
+        },
+        {
+          name: "Messages",
+          href: "/dashboard/messages",
+          icon: MessageSquare,
+        },
+        {
+          name: "Account",
+          icon: Settings,
+          children: commonAccount,
+        },
+      ];
+    }
+  }, [userRole]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -146,8 +285,6 @@ const DashboardLayoutContent = ({ children }) => {
                 className="bg-transparent border-none outline-none text-sm ml-2 w-full text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
-
-            {/* Back to Home Button - Premium Style */}
 
             {/* Notification Bell */}
             <button className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 relative transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 group">
@@ -223,7 +360,7 @@ const DashboardLayoutContent = ({ children }) => {
           </div>
         </nav>
 
-        {/* Sidebar - Premium Style */}
+        {/* Sidebar - Premium Style with Tree Structure */}
         <aside
           className={`
             fixed top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64 sm:w-72 transform transition-all duration-300 ease-out 
@@ -236,58 +373,26 @@ const DashboardLayoutContent = ({ children }) => {
             <div className="space-y-6">
               <div className="px-2">
                 <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                  Navigation
+                  Menu
                 </p>
                 <nav className="space-y-1.5">
-                  {navItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={handleSidebarClose}
-                        className={`
-                          relative flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group overflow-hidden
-                          ${
-                            isActive
-                              ? "bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-lg shadow-rose-500/30"
-                              : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
-                          }
-                        `}
-                      >
-                        {!isActive && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 to-orange-600/0 group-hover:from-rose-500/5 group-hover:to-orange-600/5 rounded-xl transition-all" />
-                        )}
-                        <Icon
-                          className={`w-5 h-5 flex-shrink-0 relative z-10 ${
-                            isActive
-                              ? "text-white"
-                              : "text-gray-500 dark:text-gray-500 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors"
-                          }`}
-                        />
-                        <span className="font-semibold relative z-10 flex-grow">
-                          {item.name}
-                        </span>
-                        {isActive && (
-                          <motion.div
-                            layoutId="activeTab"
-                            className="absolute inset-0 bg-gradient-to-r from-rose-600/20 to-orange-600/20 rounded-xl -z-10"
-                            initial={false}
-                            transition={{
-                              type: "spring",
-                              stiffness: 400,
-                              damping: 25,
-                            }}
-                          />
-                        )}
-                        {!isActive && (
-                          <ChevronRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-gray-400 relative z-10" />
-                        )}
-                      </Link>
-                    );
-                  })}
+                  {navItems ? (
+                    navItems.map((item, index) => (
+                      <SidebarItem
+                        key={index}
+                        item={item}
+                        pathname={pathname}
+                        onClose={handleSidebarClose}
+                      />
+                    ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 space-y-4">
+                      <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-rose-500 rounded-full animate-spin"></div>
+                      <p className="text-xs font-medium text-gray-400 animate-pulse">
+                        Loading menu...
+                      </p>
+                    </div>
+                  )}
                 </nav>
               </div>
             </div>
@@ -306,7 +411,7 @@ const DashboardLayoutContent = ({ children }) => {
                   <span className="font-bold text-sm">Pro Plan</span>
                 </div>
                 <p className="text-xs text-rose-100 mb-3 font-medium">
-                  Unlock premium features and boost your potential
+                  Unlock premium features
                 </p>
                 <button className="w-full py-2.5 bg-white text-rose-600 text-xs font-bold rounded-xl hover:bg-rose-50 transition-all duration-200 group-hover:shadow-lg group-hover:shadow-white/20 flex items-center justify-center gap-2">
                   <span>Upgrade Now</span>

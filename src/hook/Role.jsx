@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const useRole = () => {
   const { data: session } = useSession();
-  const [role, setRole] = useState("user"); // Default to "user" to prevent flicker or unauthorized access
+  const [role, setRole] = useState(null); // Default to null (loading state) to prevent flicker
 
   useEffect(() => {
     const fetchUserRole = async () => {
