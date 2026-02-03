@@ -768,3 +768,235 @@ export const getAdminDataOverview = async () => {
     };
   }
 };
+
+export const getUserDataOverview = async (email) => {
+  try {
+    if (!email) {
+      throw new Error("Email is required for user overview");
+    }
+
+    const bookingsCollection = dbConnect(collections.BOOKING);
+    const bookingCaregiversCollection = dbConnect(
+      collections.BOOKINGCAREGIVERS,
+    );
+
+    // 1. Recent Service Bookings
+    const recentServiceBookingsPipeline = [
+      { $match: { "user.email": email } },
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          serviceName: 1,
+          "user.name": 1,
+          "user.email": 1,
+          "financials.totalCost": 1,
+          status: 1,
+          createdAt: 1,
+          "bookingDetails.duration": 1,
+        },
+      },
+    ];
+
+    // 2. Recent Caregiver Bookings
+    const recentCaregiverBookingsPipeline = [
+      { $match: { bookerEmail: email } },
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          caregiverName: 1,
+          "user.name": 1,
+          "user.email": 1,
+          totalCost: 1,
+          status: 1,
+          createdAt: 1,
+          days: 1,
+        },
+      },
+    ];
+
+    // 3. Combined Chart Data (Services + Caregivers Spending)
+    // We need to fetch all to aggregate properly or use a more complex union.
+    // Simpler approach: fetch all confirmed bookings for the user and aggregate in JS or separate pipelines.
+    // Given the scale, separate pipelines are fine.
+
+    const serviceChartPipeline = [
+      { $match: { "user.email": email, status: "confirmed" } },
+      {
+        $addFields: {
+          date: { $toDate: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            year: { $year: "$date" },
+          },
+          amount: { $sum: "$financials.totalCost" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+      { $limit: 6 },
+    ];
+
+    const caregiverChartPipeline = [
+      { $match: { bookerEmail: email, status: "confirmed" } },
+      {
+        $addFields: {
+          date: { $toDate: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            year: { $year: "$date" },
+          },
+          amount: { $sum: "$totalCost" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+      { $limit: 6 },
+    ];
+
+    const [
+      recentServiceBookings,
+      recentCaregiverBookings,
+      serviceChartData,
+      caregiverChartData,
+    ] = await Promise.all([
+      bookingsCollection.aggregate(recentServiceBookingsPipeline).toArray(),
+      bookingCaregiversCollection
+        .aggregate(recentCaregiverBookingsPipeline)
+        .toArray(),
+      bookingsCollection.aggregate(serviceChartPipeline).toArray(),
+      bookingCaregiversCollection.aggregate(caregiverChartPipeline).toArray(),
+    ]);
+
+    // Merge Chart Data
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    // Create a map to merge data
+    const chartMap = new Map();
+
+    // Helper to add to map
+    const addToMap = (data) => {
+      data.forEach((item) => {
+        const key = `${item._id.year}-${item._id.month}`;
+        const current = chartMap.get(key) || {
+          year: item._id.year,
+          month: item._id.month,
+          amount: 0,
+        };
+        current.amount += item.amount;
+        chartMap.set(key, current);
+      });
+    };
+
+    addToMap(serviceChartData);
+    addToMap(caregiverChartData);
+
+    // Convert map to array and sort
+    const mergedChartData = Array.from(chartMap.values())
+      .sort((a, b) => {
+        if (a.year !== b.year) return a.year - b.year;
+        return a.month - b.month;
+      })
+      .map((item) => ({
+        name: monthNames[item.month - 1],
+        amount: item.amount,
+      }));
+
+    // Stats for User
+    // Calculate total spent and active bookings locally from fetched data is insufficient if we limit to 5.
+    // Let's run a quick stats aggregation.
+    const serviceStatsPipeline = [
+      { $match: { "user.email": email } },
+      {
+        $group: {
+          _id: null,
+          totalSpent: {
+            $sum: {
+              $cond: [
+                { $eq: ["$status", "confirmed"] },
+                "$financials.totalCost",
+                0,
+              ],
+            },
+          },
+          activeBookings: {
+            $sum: {
+              $cond: [{ $in: ["$status", ["pending", "confirmed"]] }, 1, 0],
+            },
+          },
+        },
+      },
+    ];
+
+    const caregiverStatsPipeline = [
+      { $match: { bookerEmail: email } },
+      {
+        $group: {
+          _id: null,
+          totalSpent: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "confirmed"] }, "$totalCost", 0],
+            },
+          },
+          activeBookings: {
+            $sum: {
+              $cond: [{ $in: ["$status", ["pending", "confirmed"]] }, 1, 0],
+            },
+          },
+        },
+      },
+    ];
+
+    const [serviceStats, caregiverStats] = await Promise.all([
+      bookingsCollection.aggregate(serviceStatsPipeline).toArray(),
+      bookingCaregiversCollection.aggregate(caregiverStatsPipeline).toArray(),
+    ]);
+
+    const totalSpent =
+      (serviceStats[0]?.totalSpent || 0) +
+      (caregiverStats[0]?.totalSpent || 0);
+    const activeBookings =
+      (serviceStats[0]?.activeBookings || 0) +
+      (caregiverStats[0]?.activeBookings || 0);
+
+    return {
+      stats: {
+        totalSpent,
+        activeBookings,
+      },
+      chartData: mergedChartData,
+      recentServiceBookings,
+      recentCaregiverBookings,
+    };
+  } catch (error) {
+    console.error("Error in getUserDataOverview:", error);
+    return {
+      stats: { totalSpent: 0, activeBookings: 0 },
+      chartData: [],
+      recentServiceBookings: [],
+      recentCaregiverBookings: [],
+    };
+  }
+};

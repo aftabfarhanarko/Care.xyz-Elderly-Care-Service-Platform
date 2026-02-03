@@ -10,6 +10,7 @@ import {
   Chrome,
   LogIn,
   ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
@@ -96,8 +97,34 @@ const LoginFrom = () => {
     }
   };
 
+  const handleAdminFill = () => {
+    setFormData({
+      ...formData,
+      email: "admin@gmail.com",
+      password: "123",
+    });
+    toast.success("Admin credentials auto-filled");
+  };
+
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 px-4 lg:px-8 relative overflow-hidden bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-rose-950/20 dark:to-gray-900">
+    <div className="min-h-screen pt-30 flex flex-col justify-center py-12 px-4 lg:px-8 relative overflow-hidden bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-rose-950/20 dark:to-gray-900">
+      {/* Quick Admin Access Button */}
+      <motion.button
+        initial={{ x: 50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 1 }}
+        onClick={handleAdminFill}
+        className="fixed right-0 top-1/4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md p-3 pl-4 rounded-l-2xl shadow-xl border-y border-l border-gray-200 dark:border-gray-700 flex items-center gap-3 group hover:pl-6 transition-all duration-300 cursor-pointer"
+        title="Click to fill Admin Credentials"
+      >
+        <span className="text-sm font-bold text-gray-600 dark:text-gray-300 hidden group-hover:block animate-in slide-in-from-right-2">
+          Admin Demo
+        </span>
+        <div className="bg-gradient-to-tr from-rose-500 to-purple-600 p-2 rounded-xl shadow-lg group-hover:shadow-rose-500/30 transition-all">
+          <ShieldCheck className="w-5 h-5 text-white" />
+        </div>
+      </motion.button>
+
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <motion.div
@@ -285,7 +312,7 @@ const LoginFrom = () => {
                 <>
                   <LogIn className="w-5 h-5" />
                   Sign In
-                  {/* <ArrowRight className="w-4 h-4" /> */}
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </motion.button>
