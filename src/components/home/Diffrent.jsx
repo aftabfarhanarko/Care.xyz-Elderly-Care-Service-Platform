@@ -214,7 +214,7 @@ const Diffrent = () => {
                 Premium Care Options
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-4">
               Care for Every Moment
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -293,7 +293,7 @@ const Diffrent = () => {
                   Premium Caregivers
                 </span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-3">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 pb-1 mb-3">
                 Meet Our Top Caregivers
               </h2>
               <p className="text-lg text-gray-600 max-w-xl">

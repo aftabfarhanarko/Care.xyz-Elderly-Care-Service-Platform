@@ -139,7 +139,7 @@ const AllFile = () => {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-3"
+              className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3"
             >
               Welcome to Care.xyz
             </motion.p>
@@ -261,7 +261,7 @@ const AllFile = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="font-bold text-gray-400 tracking-widest uppercase text-sm mb-2 block">
+              <span className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-2 block">
                 Value for Life
               </span>
               <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
@@ -590,7 +590,7 @@ const AllFile = () => {
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-3"
+              className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3"
             >
               FAQs
             </motion.p>

@@ -67,13 +67,13 @@ const Services = () => {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-rose-600 font-semibold tracking-wide uppercase text-sm">
+            <span className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3 block">
               What We Offer
             </span>
-            <h2 className="mt-2 text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
               Our Premium Services
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Comprehensive care solutions tailored to your specific needs,
               delivered by professionals.
             </p>
@@ -173,19 +173,19 @@ const Services = () => {
 
             {/* Right: Content */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <span className="font-bold text-gray-500 tracking-[0.2em] uppercase text-sm mb-2 block">
-                Ageing Gracefully
-              </span>
-              <h2 className="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-                Caring is a <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
-                  way of life...
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <span className="text-rose-600 font-bold tracking-widest uppercase text-sm mb-3 block">
+                  Ageing Gracefully
                 </span>
-              </h2>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+                  Caring is a <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+                    way of life...
+                  </span>
+                </h2>
 
               <h3 className="text-xl font-bold text-gray-800 mb-4">
                 Ageing is a process of self discovery... we merely help you!
