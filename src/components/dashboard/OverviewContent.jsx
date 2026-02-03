@@ -15,6 +15,8 @@ import {
   Legend,
 } from "recharts";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminDataOverview } from "@/actions/serverData/dashbordApi";
 import {
   Calendar,
   CheckCircle,
@@ -65,49 +67,15 @@ const OverviewContent = () => {
   const { userRole } = useDashboard();
   const { data: session } = useSession();
 
-  const userStats = [
-    {
-      title: "Total Bookings",
-      value: "12",
-      icon: Calendar,
-      color: "from-rose-500 to-rose-600",
-      iconColor: "text-white",
-      trend: "+12%",
-      trendUp: true,
-    },
-    {
-      title: "Upcoming",
-      value: "3",
-      icon: Clock,
-      color: "from-orange-500 to-amber-600",
-      iconColor: "text-white",
-      trend: "-2%",
-      trendUp: false,
-    },
-    {
-      title: "Completed",
-      value: "8",
-      icon: CheckCircle,
-      color: "from-emerald-500 to-teal-600",
-      iconColor: "text-white",
-      trend: "+5%",
-      trendUp: true,
-    },
-    {
-      title: "Reviews Given",
-      value: "5",
-      icon: Star,
-      color: "from-yellow-500 to-amber-500",
-      iconColor: "text-white",
-      trend: "+1",
-      trendUp: true,
-    },
-  ];
+  const { data: dashboardData, isLoading } = useQuery({
+    queryKey: ["adminOverviewData"],
+    queryFn: getAdminDataOverview,
+  });
 
-  const providerStats = [
+  const dynamicStats = [
     {
       title: "Total Earnings",
-      value: "$2,450",
+      value: `$${dashboardData?.stats?.totalEarnings || 0}`,
       icon: DollarSign,
       color: "from-rose-500 to-pink-600",
       iconColor: "text-white",
@@ -116,7 +84,7 @@ const OverviewContent = () => {
     },
     {
       title: "Active Jobs",
-      value: "4",
+      value: dashboardData?.stats?.activeJobs || 0,
       icon: Briefcase,
       color: "from-blue-500 to-indigo-600",
       iconColor: "text-white",
@@ -125,7 +93,7 @@ const OverviewContent = () => {
     },
     {
       title: "Pending Requests",
-      value: "2",
+      value: dashboardData?.stats?.pendingRequests || 0,
       icon: Clock,
       color: "from-orange-500 to-amber-600",
       iconColor: "text-white",
@@ -134,7 +102,7 @@ const OverviewContent = () => {
     },
     {
       title: "Rating",
-      value: "4.9",
+      value: dashboardData?.stats?.rating || 0,
       icon: Star,
       color: "from-yellow-500 to-amber-500",
       iconColor: "text-white",
@@ -143,116 +111,45 @@ const OverviewContent = () => {
     },
   ];
 
-  const stats = userRole === "user" ? userStats : providerStats;
+  const stats = dynamicStats;
 
-  const upcomingBookings = [
-    {
-      id: 1,
-      sitter: "Sarah Johnson",
-      service: "Babysitting",
-      date: "2024-03-20",
-      time: "18:00 – 22:00",
-      status: "Confirmed",
-      price: "$60",
-    },
-    {
-      id: 2,
-      sitter: "Emily Davis",
-      service: "Nanny Service",
-      date: "2024-03-22",
-      time: "09:00 – 17:00",
-      status: "Pending",
-      price: "$120",
-    },
-    {
-      id: 3,
-      sitter: "Michael Brown",
-      service: "Pet Sitting",
-      date: "2024-03-25",
-      time: "10:00 – 14:00",
-      status: "Confirmed",
-      price: "$45",
-    },
-  ];
+  const dynamicListData = (dashboardData?.recentBookings || []).map((item) => ({
+    id: item._id,
+    client: item.user?.name || "Unknown",
+    service: item.serviceName || "Service",
+    date: item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString()
+      : "N/A",
+    time: item.bookingDetails?.duration
+      ? `${item.bookingDetails.duration} days`
+      : "N/A",
+    status: item.status,
+    price: `$${item.financials?.totalCost || 0}`,
+    user: item.user,
+  }));
 
-  const upcomingJobs = [
-    {
-      id: 1,
-      client: "John Doe",
-      service: "Babysitting",
-      date: "2024-03-21",
-      time: "19:00 – 23:00",
-      status: "Confirmed",
-      price: "$80",
-    },
-    {
-      id: 2,
-      client: "Jane Smith",
-      service: "Pet Sitting",
-      date: "2024-03-23",
-      time: "10:00 – 12:00",
-      status: "Pending",
-      price: "$30",
-    },
-  ];
-
-  const listData = userRole === "user" ? upcomingBookings : upcomingJobs;
+  const listData = dynamicListData;
 
   // ── Chart Data ───────────────────────────────────────────
-  const userMonthlyData = [
-    { name: "Jan", amount: 120 },
-    { name: "Feb", amount: 200 },
-    { name: "Mar", amount: 150 },
-    { name: "Apr", amount: 280 },
-    { name: "May", amount: 190 },
-    { name: "Jun", amount: 350 },
-  ];
-
-  const providerMonthlyData = [
-    { name: "Jan", amount: 800 },
-    { name: "Feb", amount: 1200 },
-    { name: "Mar", amount: 950 },
-    { name: "Apr", amount: 1600 },
-    { name: "May", amount: 1400 },
-    { name: "Jun", amount: 2100 },
-  ];
-
-  const userServiceData = [
-    { name: "Babysitting", value: 45, color: "#f43f5e" }, // rose-500
-    { name: "Nanny", value: 30, color: "#f97316" }, // orange-500
-    { name: "Pet Sitting", value: 25, color: "#eab308" }, // yellow-500
-  ];
-
-  const providerJobData = [
-    { name: "Babysitting", value: 55, color: "#f43f5e" },
-    { name: "Nanny", value: 35, color: "#f97316" },
-    { name: "Housekeeping", value: 10, color: "#10b981" }, // emerald-500
-  ];
-
-  const chartData = userRole === "user" ? userMonthlyData : providerMonthlyData;
-  const pieData = userRole === "user" ? userServiceData : providerJobData;
+  const chartData = (dashboardData?.chartData || []).map((d) => ({
+    name: d.name,
+    amount: d.revenue,
+  }));
+  const pieData = dashboardData?.pieData || [];
 
   // ── Recent Activity ──────────────────────────────────────
-  const recentActivity = [
-    {
-      id: 1,
-      action: "Booking confirmed",
-      desc: "Your booking with Sarah Johnson was confirmed",
-      time: "2 hours ago",
-    },
-    {
-      id: 2,
-      action: "New message",
-      desc: "You received a message from Emily Davis",
-      time: "5 hours ago",
-    },
-    {
-      id: 3,
-      action: "Payment successful",
-      desc: "Payment for booking #1234 was successful",
-      time: "1 day ago",
-    },
-  ];
+  const recentActivity = (dashboardData?.recentActivity || []).map((item) => ({
+    id: item.id,
+    action: item.action,
+    desc: item.desc,
+    time: item.time
+      ? new Date(item.time).toLocaleDateString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })
+      : "Just now",
+  }));
 
   return (
     <div className="space-y-10 pb-12">
@@ -292,16 +189,7 @@ const OverviewContent = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700/80 transition-all duration-200 group">
-            <Download className="w-4 h-4 text-gray-500 group-hover:text-rose-500 transition-colors" />
-            <span>Export Report</span>
-          </button>
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-bold shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
-            <Plus className="w-5 h-5" />
-            <span>New {userRole === "user" ? "Booking" : "Job"}</span>
-          </button>
-        </div>
+    
       </motion.div>
 
       {/* Stats Grid – Premium glass + gradient cards */}
@@ -588,15 +476,17 @@ const OverviewContent = () => {
                     >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                           #{1000 + item.id}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                           {item.date}
-                        </td>
+                        <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {typeof item.id === "number"
+                        ? `#${1000 + item.id}`
+                        : `#${item.id.slice(-6)}`}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {item.date}
+                    </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                            {userRole === "user" ? item.sitter : item.client}
                         </td>

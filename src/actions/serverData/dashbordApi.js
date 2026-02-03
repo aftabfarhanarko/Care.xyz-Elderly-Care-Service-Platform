@@ -501,223 +501,214 @@ export const getMessagesData = async () => {
 
 // Earning Chart Data Get Pipeline
 
-export const getEarningsData = async (email) => {
+export const getAdminDataOverview = async () => {
   try {
-    if (!email) return { error: "No email provided" };
+    const bookingsCollection = dbConnect(collections.BOOKING);
+    const reviewServicesCollection = dbConnect(collections.REVIEWSERVICES);
 
-    // 1. Get User's Services IDs (provider)
-    const myServices = await dbConnect(collections.SERVICES)
-      .find({ "contactInfo.email": email })
-      .project({ _id: 1 })
-      .toArray();
-
-    const myServiceIds = myServices.map((s) => s._id.toString());
-
-    // 2. Get User's Caregivers IDs (provider)
-    const myCaregivers = await dbConnect(collections.CAREGIVERS)
-      .find({ publishEmail: email })
-      .project({ _id: 1 })
-      .toArray();
-
-    const myCaregiverIds = myCaregivers.map((c) => c._id.toString());
-
-    // 3. Aggregate Service Bookings (Earnings)
-    const servicePipeline = [
-      { $match: { serviceId: { $in: myServiceIds } } },
+    // 1. Stats Aggregation
+    const statsPipeline = [
       {
-        $facet: {
-          daily: [
-            {
-              $project: {
-                date: {
-                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
-                },
-                cost: { $toDouble: "$financials.totalCost" },
-              },
+        $group: {
+          _id: null,
+          totalEarnings: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "confirmed"] }, "$financials.totalCost", 0],
             },
-            {
-              $group: {
-                _id: "$date",
-                total: { $sum: "$cost" },
-              },
+          },
+          activeJobs: {
+            $sum: {
+              $cond: [{ $in: ["$status", ["pending", "confirmed"]] }, 1, 0],
             },
-            { $sort: { _id: 1 } },
-          ],
-          recent: [{ $sort: { createdAt: -1 } }, { $limit: 5 }],
+          },
+          pendingRequests: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "pending"] }, 1, 0],
+            },
+          },
         },
       },
     ];
 
-    const serviceResults = await dbConnect(collections.BOOKING)
-      .aggregate(servicePipeline)
-      .toArray();
-    const serviceData = serviceResults[0] || { daily: [], recent: [] };
-
-    // 4. Aggregate Caregiver Bookings (Earnings)
-    const caregiverPipeline = [
-      { $match: { caregiverId: { $in: myCaregiverIds } } },
+    // 2. Monthly Revenue Aggregation for Chart
+    const chartPipeline = [
       {
-        $facet: {
-          daily: [
-            {
-              $project: {
-                date: {
-                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
-                },
-                cost: { $toDouble: "$totalCost" },
-              },
-            },
-            {
-              $group: {
-                _id: "$date",
-                total: { $sum: "$cost" },
-              },
-            },
-            { $sort: { _id: 1 } },
-          ],
-          recent: [{ $sort: { createdAt: -1 } }, { $limit: 5 }],
+        $match: { status: "confirmed" },
+      },
+      {
+        $addFields: {
+          date: { $toDate: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            year: { $year: "$date" },
+          },
+          revenue: { $sum: "$financials.totalCost" },
+          bookings: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+      { $limit: 6 }, // Last 6 months
+    ];
+
+    // 3. Recent Bookings
+    const recentBookingsPipeline = [
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          serviceName: 1,
+          "user.name": 1,
+          "user.email": 1,
+          "financials.totalCost": 1,
+          status: 1,
+          createdAt: 1,
+          "bookingDetails.duration": 1,
         },
       },
     ];
 
-    const caregiverResults = await dbConnect(collections.BOOKINGCAREGIVERS)
-      .aggregate(caregiverPipeline)
-      .toArray();
-    const caregiverData = caregiverResults[0] || { daily: [], recent: [] };
+    // 4. Rating Aggregation
+    const ratingPipeline = [
+      {
+        $group: {
+          _id: null,
+          avgRating: { $avg: "$rating" },
+        },
+      },
+    ];
 
-    // Calculate Totals
-    const totalServiceEarnings = serviceData.daily.reduce(
-      (acc, curr) => acc + curr.total,
-      0,
-    );
-    const totalCaregiverEarnings = caregiverData.daily.reduce(
-      (acc, curr) => acc + curr.total,
-      0,
-    );
+    // 5. Pie Chart Aggregation (Service Distribution)
+    const piePipeline = [
+      {
+        $group: {
+          _id: "$serviceName",
+          value: { $sum: 1 },
+        },
+      },
+      { $limit: 5 },
+    ];
 
-    // Helper to format chart data (Daily)
-    // Merge service and caregiver daily data
-    const dailyMap = {};
+    // 6. Recent Activity (using bookings for now, can be expanded)
+    const activityPipeline = [
+      { $sort: { updatedAt: -1, createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          status: 1,
+          updatedAt: 1,
+          createdAt: 1,
+          serviceName: 1,
+          "user.name": 1,
+        },
+      },
+    ];
 
-    // Process Service Data
-    serviceData.daily.forEach((d) => {
-      if (d._id) {
-        dailyMap[d._id] = (dailyMap[d._id] || 0) + d.total;
+    const [
+      statsResult,
+      chartResult,
+      recentBookings,
+      ratingResult,
+      pieResult,
+      activityResult,
+    ] = await Promise.all([
+      bookingsCollection.aggregate(statsPipeline).toArray(),
+      bookingsCollection.aggregate(chartPipeline).toArray(),
+      bookingsCollection.aggregate(recentBookingsPipeline).toArray(),
+      reviewServicesCollection.aggregate(ratingPipeline).toArray(),
+      bookingsCollection.aggregate(piePipeline).toArray(),
+      bookingsCollection.aggregate(activityPipeline).toArray(),
+    ]);
+
+    // Format Chart Data
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formattedChartData = chartResult.map((item) => ({
+      name: monthNames[item._id.month - 1],
+      revenue: item.revenue,
+      bookings: item.bookings,
+    }));
+
+    // Format Pie Data with Colors
+    const COLORS = ["#f43f5e", "#f97316", "#eab308", "#10b981", "#3b82f6"];
+    const formattedPieData = pieResult.map((item, index) => ({
+      name: item._id || "Unknown",
+      value: item.value,
+      color: COLORS[index % COLORS.length],
+    }));
+
+    // Format Recent Activity
+    const formattedActivity = activityResult.map((item) => {
+      let action = "Update";
+      let desc = "Booking updated";
+      if (item.status === "pending") {
+        action = "New Booking Request";
+        desc = `New booking request from ${item.user?.name} for ${item.serviceName}`;
+      } else if (item.status === "confirmed") {
+        action = "Booking Confirmed";
+        desc = `Booking confirmed for ${item.user?.name}`;
+      } else if (item.status === "completed") {
+        action = "Service Completed";
+        desc = `Service completed for ${item.user?.name}`;
+      } else if (item.status === "cancelled") {
+        action = "Booking Cancelled";
+        desc = `Booking cancelled by ${item.user?.name}`;
       }
-    });
 
-    // Process Caregiver Data
-    caregiverData.daily.forEach((d) => {
-      if (d._id) {
-        dailyMap[d._id] = (dailyMap[d._id] || 0) + d.total;
-      }
-    });
-
-    // Convert map to array and sort by date
-    const sortedDates = Object.keys(dailyMap).sort();
-
-    const combinedDailyChartData = sortedDates.map((date) => {
-      const dateObj = new Date(date);
       return {
-        date: date,
-        displayDate: dateObj.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }), // "Jan 21"
-        amount: dailyMap[date],
+        id: item._id,
+        action,
+        desc,
+        time: item.updatedAt || item.createdAt, // Will format on client
       };
     });
 
-    // CHECK FOR EMPTY DATA & RETURN MOCK DATA (Fallback)
-    const isDataEmpty =
-      combinedDailyChartData.length === 0 &&
-      totalServiceEarnings === 0 &&
-      totalCaregiverEarnings === 0;
-
-    if (isDataEmpty) {
-      // Generate last 7 days mock data
-      const mockDailyChartData = [];
-      const today = new Date();
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        const dateStr = d.toISOString().split("T")[0];
-        mockDailyChartData.push({
-          date: dateStr,
-          displayDate: d.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          }),
-          amount: Math.floor(Math.random() * 300) + 100, // Random 100-400
-        });
-      }
-
-      return {
-        dailyChartData: mockDailyChartData,
-        totalServiceEarnings: 1540.5,
-        totalCaregiverEarnings: 980.75,
-        recentServices: [
-          {
-            _id: "mock1",
-            user: { name: "Emma Wilson", email: "emma@example.com" },
-            serviceName: "Full Day Nanny",
-            financials: { totalCost: 180 },
-            createdAt: new Date().toISOString(),
-          },
-          {
-            _id: "mock2",
-            user: { name: "James Anderson", email: "james@example.com" },
-            serviceName: "Weekend Babysitting",
-            financials: { totalCost: 120 },
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-          },
-          {
-            _id: "mock3",
-            user: { name: "Sophia Martinez", email: "sophia@example.com" },
-            serviceName: "Infant Care",
-            financials: { totalCost: 250 },
-            createdAt: new Date(Date.now() - 172800000).toISOString(),
-          },
-        ],
-        recentCaregivers: [
-          {
-            _id: "mock4",
-            bookerName: "Oliver Thomas",
-            caregiverName: "Jessica Parker",
-            totalCost: 150,
-            createdAt: new Date().toISOString(),
-          },
-          {
-            _id: "mock5",
-            bookerName: "Lucas White",
-            caregiverName: "Emily Davis",
-            totalCost: 95,
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-          },
-        ],
-      };
-    }
+    const stats = statsResult[0] || {
+      totalEarnings: 0,
+      activeJobs: 0,
+      pendingRequests: 0,
+    };
+    const rating = ratingResult[0]?.avgRating || 0;
 
     return {
-      dailyChartData: combinedDailyChartData,
-      totalServiceEarnings,
-      totalCaregiverEarnings,
-      recentServices: serviceData.recent.map((item) => ({
-        ...item,
-        _id: item._id.toString(),
-      })),
-      recentCaregivers: caregiverData.recent.map((item) => ({
-        ...item,
-        _id: item._id.toString(),
-      })),
+      stats: {
+        ...stats,
+        rating: parseFloat(rating.toFixed(1)),
+      },
+      chartData: formattedChartData,
+      pieData: formattedPieData,
+      recentBookings,
+      recentActivity: formattedActivity,
     };
   } catch (error) {
-    console.error("Error in getEarningsData:", error);
+    console.error("Error in getAdminDataOverview:", error);
     return {
-      serviceChartData: [],
-      caregiverChartData: [],
-      recentServices: [],
-      recentCaregivers: [],
+      stats: {
+        totalEarnings: 0,
+        activeJobs: 0,
+        pendingRequests: 0,
+        rating: 0,
+      },
+      chartData: [],
+      recentBookings: [],
     };
   }
 };
