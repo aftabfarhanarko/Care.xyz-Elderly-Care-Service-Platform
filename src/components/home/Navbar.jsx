@@ -23,6 +23,7 @@ import {
   Users,
   Briefcase,
   Mail,
+  Star,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -69,6 +70,7 @@ const Navbar = () => {
     { name: "About", href: "/about", icon: Info },
     { name: "Caregivers", href: "/caregivers", icon: Users },
     { name: "Services", href: "/services", icon: Briefcase },
+    { name: "Reviews", href: "/reviews", icon: Star },
     { name: "Contact", href: "/contact", icon: Mail },
   ];
 
@@ -93,7 +95,7 @@ const Navbar = () => {
             href="/"
             className="flex-shrink-0 hover:opacity-80 transition-opacity"
           >
-            <img src="/logo2.png" alt="Logo" className="h-12 w-auto" />
+            <img src="/logo2.png" alt="Logo" className=" h-8 md:h-12 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

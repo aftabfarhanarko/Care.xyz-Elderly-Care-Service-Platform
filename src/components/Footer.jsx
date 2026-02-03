@@ -20,7 +20,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative px-5 md:px-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-300">
+    <footer className="relative px-5 md:px-8 lg:px-10 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-300">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-rose-600/5 rounded-full blur-3xl"></div>
@@ -176,7 +176,7 @@ const Footer = () => {
                     <Mail className="w-5 h-5 text-rose-500 group-hover:text-white transition-colors" />
                   </div>
                   <span className="text-gray-400 group-hover:text-rose-400 transition-colors">
-                    aftabfarhan324@gmail.com
+                    export@.com
                   </span>
                 </li>
               </ul>

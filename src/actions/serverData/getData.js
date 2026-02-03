@@ -113,7 +113,7 @@ export const getMessagesData = async (
   page = 1,
   limit = 6,
   search = "",
-  filter = "All"
+  filter = "All",
 ) => {
   try {
     const skip = (page - 1) * limit;
@@ -213,10 +213,7 @@ export const getServiceReviews = async (serviceId) => {
     let serviceIdCondition = { serviceId: serviceId };
     if (serviceId && ObjectId.isValid(serviceId)) {
       serviceIdCondition = {
-        $or: [
-          { serviceId: serviceId },
-          { serviceId: new ObjectId(serviceId) },
-        ],
+        $or: [{ serviceId: serviceId }, { serviceId: new ObjectId(serviceId) }],
       };
     }
     const result = await dbConnect(collections.REVIEWSERVICES)
@@ -228,4 +225,26 @@ export const getServiceReviews = async (serviceId) => {
     console.error("Error fetching reviews:", error);
     return [];
   }
+};
+
+// Home Page Reviews API
+export const getHomePageReviews = async () => {
+  const serviceReviews = await dbConnect(collections.REVIEWSERVICES)
+    .find()
+    .toArray();
+
+  const caregiverReviews = await dbConnect(collections.REVIEWCAREGIVERS)
+    .find()
+    .toArray();
+
+  const formatData = (data) =>
+    data.map((item) => ({
+      ...item,
+      _id: item._id.toString(),
+    }));
+
+  return {
+    serviceReviews: formatData(serviceReviews),
+    caregiverReviews: formatData(caregiverReviews),
+  };
 };

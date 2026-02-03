@@ -12,26 +12,43 @@ const HomePage = () => {
   const bannerSlides = [
     {
       id: 1,
-      title: "Trusted Care for Your Family",
+      title: "Trusted Baby Care for Your Little Ones",
       subtitle:
-        "Find reliable caregivers for your loved ones with just a few clicks",
-      image: "https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&q=80&w=2000",
-      cta: "Book Now",
+        "Experienced babysitters you can trust with your children's safety and happiness",
+      image:
+        "https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&q=80&w=2000",
+      cta: "Find a Babysitter",
+      link: "/services?category=babysitter",
     },
     {
       id: 2,
-      title: "Professional Elderly Care",
+      title: "Compassionate Elderly Care",
       subtitle:
-        "Expert caregivers trained to provide compassionate elderly care",
-      image: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&q=80&w=2000",
-      cta: "Learn More",
+        "Dedicated professional support and companionship for your aging loved ones",
+      image:
+        "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&q=80&w=2000",
+      cta: "Book Elderly Care",
+      link: "/services?category=elderly-care",
     },
     {
       id: 3,
-      title: "Safe & Secure Services",
-      subtitle: "All caregivers are verified and background checked",
-      image: "https://images.unsplash.com/photo-1576091160550-2187d80a1a44?auto=format&fit=crop&q=80&w=2000",
-      cta: "Get Started",
+      title: "Specialized Medical Assistance",
+      subtitle:
+        "Professional care for sick family members requiring special attention",
+      image:
+        "https://images.unsplash.com/photo-1576091160550-2187d80a1a44?auto=format&fit=crop&q=80&w=2000",
+      cta: "Get Specialist Help",
+      link: "/services?category=medical-care",
+    },
+    {
+      id: 4,
+      title: "Verified & Trusted Caregivers",
+      subtitle:
+        "Rigorous background checks and verification for your complete peace of mind",
+      image:
+        "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2000",
+      cta: "Verify a Caregiver",
+      link: "/caregivers",
     },
   ];
 
@@ -56,7 +73,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 overflow-x-hidden">
       {/* BANNER SLIDER */}
-      <section className="relative mt-16 h-96 md:h-screen overflow-hidden">
+      <section className="relative mt-16 h-76 md:h-[600px] lg:h-screen overflow-hidden">
         <div className="relative w-full h-full">
           {bannerSlides.map((slide, index) => (
             <div
@@ -69,13 +86,13 @@ const HomePage = () => {
                 className="w-full h-full flex items-center justify-center relative"
                 style={{
                   backgroundImage: `url(${slide.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 {/* Overlay for better text readability */}
                 <div className="absolute inset-0 bg-black/40"></div>
-                
+
                 <div className="text-center text-white px-4 relative z-10">
                   <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
                     {slide.title}
