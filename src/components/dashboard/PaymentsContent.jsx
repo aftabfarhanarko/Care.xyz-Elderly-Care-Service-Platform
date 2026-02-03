@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, DollarSign, Clock, CheckCircle, Plus, Download } from 'lucide-react';
+import { CreditCard, DollarSign, Clock, CheckCircle, Plus, Download, FileText, MessageSquare, Trash2, MoreHorizontal } from 'lucide-react';
 
 const PaymentsContent = () => {
   const transactions = [
@@ -112,32 +112,102 @@ const PaymentsContent = () => {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50 dark:bg-gray-700/50">
-                  <tr>
-                    <th className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400">Description</th>
-                    <th className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400">Date</th>
-                    <th className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400">Amount</th>
-                    <th className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400">Status</th>
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="pl-6 pr-3 py-4 text-left">
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                      />
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Order
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Customer
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Payment
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Total
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Delivery
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Items
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Fulfillment
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {transactions.map((trx) => (
                     <tr key={trx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-gray-900 dark:text-white">{trx.service}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{trx.sitter} • {trx.method}</p>
+                      <td className="pl-6 pr-3 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                        />
                       </td>
-                      <td className="px-6 py-4 text-gray-500 dark:text-gray-400">{trx.date}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">${trx.amount.toFixed(2)}</td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        #{trx.id.split('-')[1] || trx.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {trx.date}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-xs overflow-hidden">
+                            {trx.sitter.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                            {trx.sitter}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {trx.method}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ${trx.amount.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        N/A
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {trx.service}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                           trx.status === 'completed' 
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
                             : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
                         }`}>
-                          {trx.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
+                          {trx.status === 'completed' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
                           {trx.status.charAt(0).toUpperCase() + trx.status.slice(1)}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="View">
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="Message">
+                            <MessageSquare className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-rose-600 hover:text-rose-700 dark:hover:bg-gray-700" title="Delete">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

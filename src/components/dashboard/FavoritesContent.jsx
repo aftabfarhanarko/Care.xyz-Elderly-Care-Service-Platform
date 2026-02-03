@@ -21,6 +21,9 @@ import {
   ChevronRight,
   DollarSign,
   MapPin,
+  FileText,
+  MessageSquare,
+  MoreHorizontal,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import {
@@ -306,33 +309,47 @@ const FavoritesContent = ({ data = [] }) => {
           >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-rose-100/40 dark:bg-rose-900/20 border-b border-gray-100 dark:border-gray-800">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Caregiver
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="pl-6 pr-3 py-4 text-left">
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                      />
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Client
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Order
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Schedule
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Date
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Status
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Customer
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Service / Cost
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Payment
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Actions
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Total
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Delivery
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Items
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Fulfillment
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Action
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {currentFavorites.map((item) => {
-                    const status = getStatusConfig(item.state); // Changed from item.status to item.state
-                    const StatusIcon = status.icon;
-
+                    const status = getStatusConfig(item.state);
+                    
                     return (
                       <motion.tr
                         key={item._id}
@@ -341,125 +358,76 @@ const FavoritesContent = ({ data = [] }) => {
                         whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
                         className="group transition-colors"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-lg overflow-hidden relative">
-                              {item.caregiverImage ? (
-                                <img
-                                  src={cleanImageUrl(item.caregiverImage)}
-                                  alt={item.caregiverName}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                item.caregiverName?.charAt(0).toUpperCase() ||
-                                "C"
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                {item.caregiverName || "Unknown Caregiver"}
-                              </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <Briefcase className="w-3 h-3" />
-                                {item.service || "General Care"}
-                              </div>
-                            </div>
-                          </div>
+                        <td className="pl-6 pr-3 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                          #{item._id.substring(0, 6).toUpperCase()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(item.createdAt)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-gray-800 flex items-center justify-center border border-blue-100 dark:border-gray-700 text-blue-500 font-medium text-lg overflow-hidden relative">
-                              {item.bookerImages ? (
-                                <img
-                                  src={cleanImageUrl(item.bookerImages)}
-                                  alt={item.bookerName}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                item.bookerName?.charAt(0).toUpperCase() || "C"
-                              )}
+                            <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-xs overflow-hidden">
+                              {item.bookerName?.charAt(0).toUpperCase() || "C"}
                             </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                {item.bookerName || "Unknown Client"}
-                              </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <Mail className="w-3 h-3" />
-                                {item.bookerEmail || "No Email"}
-                              </div>
+                            <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                              {item.bookerName || "Unknown"}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex flex-col gap-1 text-sm text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4 text-rose-500" />
-                              <span className="text-xs text-gray-400">Booked: {formatDate(item.createdAt)}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              {formatDate(item.startDate)}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4" />
-                              {formatTime(item.startTime)}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${status.light} ${status.border}`}
-                          >
-                            <StatusIcon className="w-3 h-3" />
-                            {status.label}
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            item.state === 'confirmed' || item.state === 'completed'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                              : 'bg-amber-50 text-amber-700 border border-amber-100'
+                          }`}>
+                            {item.state === 'confirmed' || item.state === 'completed' ? 'Success' : 'Pending'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
-                              <DollarSign className="w-4 h-4" />
-                              {item.totalCost || 0}
-                            </div>
-                            {item.days && (
-                              <span className="text-xs text-gray-400">
-                                {item.days} days • {item.hoursPerDay}h/day
-                              </span>
-                            )}
-                          </div>
+                          ${item.totalCost || 0}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(item.startDate)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {item.service || "General Care"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${status.light} ${status.border}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+                            {status.label}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end gap-2">
-                            {item.state === "confirmed" ? (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 font-medium text-xs">
+                            <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="View">
+                              <FileText className="w-4 h-4" />
+                            </button>
+                            <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="Message">
+                              <MessageSquare className="w-4 h-4" />
+                            </button>
+                            {item.state === "pending" && (
+                              <button
+                                onClick={() => handleConfirm(item._id)}
+                                className="p-1 hover:bg-gray-100 rounded text-emerald-600 hover:text-emerald-700 dark:hover:bg-gray-700"
+                                title="Confirm"
+                              >
                                 <CheckCircle className="w-4 h-4" />
-                                Confirmed
-                              </span>
-                            ) : (
-                              <>
-                                {item.state === "pending" && (
-                                  <button
-                                    onClick={() => handleConfirm(item._id)}
-                                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-emerald-600 border border-emerald-600 hover:bg-emerald-50 transition-colors"
-                                    title="Confirm Booking"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
-                                    <span className="text-xs font-medium">
-                                      Confirm
-                                    </span>
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => handleDelete(item._id)}
-                                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-red-600 border border-red-600 hover:bg-red-50 transition-colors"
-                                  title="Delete Booking"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                  <span className="text-xs font-medium">
-                                    Delete
-                                  </span>
-                                </button>
-                              </>
+                              </button>
                             )}
+                            <button
+                              onClick={() => handleDelete(item._id)}
+                              className="p-1 hover:bg-gray-100 rounded text-rose-600 hover:text-rose-700 dark:hover:bg-gray-700"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </td>
                       </motion.tr>

@@ -26,6 +26,8 @@ import {
   Plus,
   Download,
   CalendarDays,
+  FileText,
+  MessageSquare,
 } from "lucide-react";
 import { useDashboard } from "./DashboardLayoutContent";
 
@@ -519,75 +521,118 @@ const OverviewContent = () => {
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5">
+          <div className="overflow-hidden rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5">
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead>
-                  <tr className="border-b border-gray-100 dark:border-gray-700/50">
-                    <th className="px-8 py-5 text-left text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      {userRole === "user" ? "Sitter" : "Client"}
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                      </div>
                     </th>
-                    <th className="px-8 py-5 text-left text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      Service
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Order
                     </th>
-                    <th className="px-8 py-5 text-left text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      Date & Time
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
                     </th>
-                    <th className="px-8 py-5 text-left text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      Status
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Customer
                     </th>
-                    <th className="px-8 py-5 text-left text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      Price
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Payment
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Delivery
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Items
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Fulfillment
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-gray-800/50">
-                  {listData.map((item, i) => (
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {listData.map((item, i) => {
+                     const statusLower = (item.status || "").toLowerCase();
+                     const isPaymentSuccess = statusLower === "confirmed" || statusLower === "completed";
+                     const paymentLabel = isPaymentSuccess ? "Success" : "Pending";
+                     const paymentColor = isPaymentSuccess 
+                       ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
+                       : "text-amber-500 border-amber-200 bg-amber-50";
+                     const paymentDot = isPaymentSuccess ? "bg-emerald-500" : "bg-amber-500";
+ 
+                     const isFulfilled = statusLower === "confirmed" || statusLower === "completed";
+                     const fulfillmentLabel = isFulfilled ? "Fulfilled" : "Unfulfilled";
+                     const fulfillmentColor = isFulfilled 
+                       ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
+                       : "text-rose-500 border-rose-200 bg-rose-50";
+                     const fulfillmentDot = isFulfilled ? "bg-emerald-500" : "bg-rose-500";
+
+                    return (
                     <motion.tr
                       key={item.id}
                       custom={i}
                       variants={tableRowVariants}
                       initial="hidden"
                       animate="visible"
-                      className="group hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-colors duration-200"
+                      className="group transition-colors hover:bg-gray-50"
                     >
-                      <td className="whitespace-nowrap px-8 py-5">
-                        <span className="font-bold text-gray-900 dark:text-white block">
-                          {userRole === "user" ? item.sitter : item.client}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-8 py-5 text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {item.service}
-                      </td>
-                      <td className="whitespace-nowrap px-8 py-5">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            {item.date}
-                          </span>
-                          <span className="text-xs font-medium text-gray-400 mt-0.5">
-                            {item.time}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="whitespace-nowrap px-8 py-5">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                            item.status === "Confirmed"
-                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
-                          }`}
-                        >
-                          {item.status === "Confirmed" && (
-                            <div className="w-1.5 h-1.5 rounded-full bg-current mr-1.5" />
-                          )}
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-8 py-5 font-bold text-gray-900 dark:text-white">
-                        {item.price}
-                      </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                           #{1000 + item.id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           {item.date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                           {userRole === "user" ? item.sitter : item.client}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${paymentColor}`}>
+                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${paymentDot}`}></span>
+                             {paymentLabel}
+                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           {item.price}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           N/A
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           1 item
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${fulfillmentColor}`}>
+                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${fulfillmentDot}`}></span>
+                             {fulfillmentLabel}
+                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex items-center gap-2">
+                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                                    <FileText className="w-4 h-4" />
+                                </button>
+                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                                    <MessageSquare className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </td>
                     </motion.tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             </div>

@@ -149,11 +149,8 @@ const AllFile = () => {
               transition={{ delay: 0.1 }}
               className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6"
             >
-              We make a{" "}
-              <span className="text-rose-600">
-                Difference
-              </span>{" "}
-              in your lives
+              We make a <span className="text-rose-600">Difference</span> in
+              your lives
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -266,9 +263,7 @@ const AllFile = () => {
               </span>
               <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-8">
                 Expert Care{" "}
-                <span className="text-rose-600">
-                  of the Elderly
-                </span>
+                <span className="text-rose-600">of the Elderly</span>
               </h2>
 
               <ul className="space-y-5 mb-10">
@@ -422,9 +417,7 @@ const AllFile = () => {
               </span>
               <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6 leading-tight">
                 Caring is a <br />
-                <span className="text-rose-600">
-                  way of life...
-                </span>
+                <span className="text-rose-600">way of life...</span>
               </h2>
 
               <h3 className="text-xl font-bold text-gray-800 mb-4">
@@ -485,9 +478,7 @@ const AllFile = () => {
 
                 <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 leading-tight mb-6">
                   Choose The Best & Make The Child{" "}
-                  <span className="text-rose-600">
-                    Smart
-                  </span>
+                  <span className="text-rose-600">Smart</span>
                 </h2>
 
                 <p className="text-gray-600 text-lg leading-relaxed mb-8">
@@ -586,27 +577,33 @@ const AllFile = () => {
         <div className="absolute -top-24 -right-24 w-[520px] h-[520px] bg-rose-100/40 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-[520px] h-[520px] bg-purple-100/40 rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-3"
-            >
-              FAQs
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600"
-            >
-              Frequently Asked{" "}
-              <span className="text-rose-600">
-                Questions
-              </span>
-            </motion.h2>
-          </div>
-          <div className="max-w-3xl mx-auto space-y-4">
+          <div className="grid lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-5 text-left">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                className="text-rose-600 font-semibold tracking-widest uppercase text-sm mb-3"
+              >
+                FAQs
+              </motion.p>
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 mb-6"
+              >
+                Frequently Asked <span className="text-rose-600">Questions</span>
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-gray-600 leading-relaxed"
+              >
+                Find answers to common questions about our services and care options. We are here to help you make the best decision for your loved ones.
+              </motion.p>
+            </div>
+            <div className="lg:col-span-7 space-y-4 w-full">
             {faqs.map((item, i) => {
               const open = activeFaq === i;
               return (
@@ -640,6 +637,7 @@ const AllFile = () => {
             })}
           </div>
         </div>
+      </div>
       </section>
     </div>
   );

@@ -476,38 +476,65 @@ const MyServicesContent = ({ services }) => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-rose-100/40 dark:bg-rose-900/20 text-left border-b border-rose-100 dark:border-rose-800/30">
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
+              <tr className="bg-gray-50 border-b border-gray-100 dark:bg-gray-800/50 dark:border-gray-700">
+                <th className="pl-6 pr-3 py-4 text-left">
+                  <input
+                    type="checkbox"
+                    className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 bg-white dark:bg-gray-800 dark:border-gray-600"
+                  />
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  ID
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Service
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Price
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                  Availability
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Hours
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                  Features
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Days
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                  Contact
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Status
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-rose-900 dark:text-rose-100 uppercase tracking-wider text-right">
-                  Actions
+                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Action
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {currentServices.map((service) => (
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+              {currentServices.map((service, i) => (
                 <motion.tr
                   key={service._id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="group hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-colors"
+                  className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors bg-white dark:bg-gray-800"
                 >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                  <td className="pl-6 pr-3 py-4">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 bg-white dark:bg-gray-800 dark:border-gray-600"
+                    />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    #{2000 + i}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {new Date().toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
                         {service.image ? (
                           <img
                             src={service.image}
@@ -516,108 +543,60 @@ const MyServicesContent = ({ services }) => {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <FileText className="w-6 h-6" />
+                            <FileText className="w-4 h-4" />
                           </div>
                         )}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-rose-600 transition-colors">
-                            {service.name}
-                          </h3>
-                          {service.icon && (
-                            <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
-                              {service.icon}
-                            </span>
-                          )}
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          {service.name}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                          {service.description}
-                        </p>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 max-w-[150px]">
+                          {service.contactInfo?.email || "No email"}
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-medium">
-                      <DollarSign className="w-4 h-4 text-rose-500" />
-                      {service.price}
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-600 border border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/30">
+                      {service.icon || "Service"}
+                    </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Calendar className="w-4 h-4 text-rose-500" />
-                        <span>
-                          {service.serviceAvailability?.days?.length || 0} Days
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Clock className="w-4 h-4 text-rose-500" />
-                        <span>
-                          {service.serviceAvailability?.hours || "N/A"}
-                        </span>
-                      </div>
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 font-medium">
+                    {service.price}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1 max-w-[200px]">
-                      {service.features?.slice(0, 2).map((feature, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                      {service.features?.length > 2 && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-                          +{service.features.length - 2} more
-                        </span>
-                      )}
-                      {(!service.features || service.features.length === 0) && (
-                        <span className="text-sm text-gray-400 italic">
-                          No features
-                        </span>
-                      )}
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {service.serviceAvailability?.hours || "N/A"}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Mail className="w-4 h-4 text-rose-500" />
-                        <span
-                          className="truncate max-w-[150px]"
-                          title={service.contactInfo?.email}
-                        >
-                          {service.contactInfo?.email || "N/A"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Phone className="w-4 h-4 text-rose-500" />
-                        <span>{service.contactInfo?.phone || "N/A"}</span>
-                      </div>
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {service.serviceAvailability?.days?.length || 0} days
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                      Active
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleViewClick(service)}
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleEditClick(service)}
-                        className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all"
-                        title="Edit"
+                        className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                        title="Edit Service"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(service._id)}
-                        className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
-                        title="Delete"
+                        className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors"
+                        title="Delete Service"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

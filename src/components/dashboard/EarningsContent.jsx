@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { DollarSign, TrendingUp, CreditCard, Download } from "lucide-react";
+import { DollarSign, TrendingUp, CreditCard, Download, FileText, MessageSquare, Trash2 } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -158,8 +158,8 @@ const EarningsContent = ({
       </div>
 
       {/* Tables Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Recent Caregiver Bookings */}
+      <div className="space-y-8">
+        {/* Recent Caregiver Bookings */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -168,19 +168,39 @@ const EarningsContent = ({
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Booker
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                    <div className="flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                    </div>
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Caregiver
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Order
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Amount
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Customer
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Payment
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Delivery
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Items
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Fulfillment
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Action
                   </th>
                 </tr>
               </thead>
@@ -191,24 +211,58 @@ const EarningsContent = ({
                       key={tx._id || i}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        #{1000 + i}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(tx.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {tx.bookerName || tx.bookerEmail}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {tx.caregiverName}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                          Success
+                        </span>
                       </td>
-                      <td className="px-4 py-3 font-medium text-rose-600 dark:text-rose-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${tx.totalCost}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {new Date(tx.createdAt).toLocaleDateString()}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        N/A
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {tx.caregiverName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                          Fulfilled
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex items-center gap-2">
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <MessageSquare className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="4"
+                      colSpan="10"
                       className="px-4 py-8 text-center text-gray-500"
                     >
                       No recent caregiver bookings found
@@ -220,7 +274,7 @@ const EarningsContent = ({
           </div>
         </div>
 
-        {/* Right: Recent Services Bookings */}
+        {/* Recent Services Bookings */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -229,19 +283,39 @@ const EarningsContent = ({
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Booker
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                    <div className="flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                    </div>
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Service
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Order
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
-                    Amount
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Customer
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Payment
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Delivery
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Items
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Fulfillment
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Action
                   </th>
                 </tr>
               </thead>
@@ -252,24 +326,58 @@ const EarningsContent = ({
                       key={tx._id || i}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        #{2000 + i}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(tx.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {tx.user?.name || tx.user?.email}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {tx.serviceName}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                          Success
+                        </span>
                       </td>
-                      <td className="px-4 py-3 font-medium text-blue-600 dark:text-blue-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${tx.financials?.totalCost}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {new Date(tx.createdAt).toLocaleDateString()}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        N/A
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {tx.serviceName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                          Fulfilled
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex items-center gap-2">
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <MessageSquare className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="4"
+                      colSpan="10"
                       className="px-4 py-8 text-center text-gray-500"
                     >
                       No recent service bookings found

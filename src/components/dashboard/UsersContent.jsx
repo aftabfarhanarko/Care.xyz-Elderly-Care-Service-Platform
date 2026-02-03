@@ -17,6 +17,9 @@ import {
   MoreVertical,
   Trash2,
   CheckCircle,
+  FileText,
+  MessageSquare,
+  MoreHorizontal,
 } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -199,22 +202,31 @@ const UsersContent = ({ initialUsers = [] }) => {
           >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-rose-100/40 dark:bg-rose-900/20 border-b border-gray-100 dark:border-gray-800">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      User
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="pl-6 pr-3 py-4 text-left">
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                      />
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Contact
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      User ID
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Joined Date
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Actions
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      User Info
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Contact
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Action
                     </th>
                   </tr>
                 </thead>
@@ -227,95 +239,97 @@ const UsersContent = ({ initialUsers = [] }) => {
                       whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
                       className="group transition-colors"
                     >
+                      <td className="pl-6 pr-3 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        #{user._id.substring(0, 6).toUpperCase()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : "N/A"}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-lg overflow-hidden relative">
+                          <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-xs overflow-hidden">
                             {user.profileImage || user.image ? (
                               <img
                                 src={cleanImageUrl(
                                   user.profileImage || user.image,
                                 )}
                                 alt={user.name}
-                                fill
-                                className="object-cover"
+                                className="w-full h-full object-cover"
                               />
                             ) : (
                               user.name?.charAt(0).toUpperCase() || "U"
                             )}
                           </div>
-                          <div>
-                            <div className="font-medium text-gray-900 dark:text-gray-100">
-                              {user.name || "Unknown User"}
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                              <Mail className="w-3 h-3" />
-                              {user.email}
-                            </div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                              {user.name || "Unknown"}
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {user.email || "No Email"}
+                            </span>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                          <Phone className="w-4 h-4" />
-                          {user.contact || "N/A"}
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {user.contact || "N/A"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(
-                            user.role,
-                          )}`}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                            user.role === "admin"
+                              ? "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
+                              : "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
+                          }`}
                         >
-                          <Shield className="w-3 h-3" />
-                          {user.role || "user"}
+                          {user.role === "admin" ? (
+                            <Shield className="w-3 h-3" />
+                          ) : (
+                            <UserIcon className="w-3 h-3" />
+                          )}
+                          <span className="capitalize">{user.role || "user"}</span>
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          {user.createdAt
-                            ? new Date(user.createdAt).toLocaleDateString()
-                            : "N/A"}
-                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() =>
-                              handleRoleUpdate(user._id, user.role)
-                            }
-                            className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border transition-colors ${
+                            onClick={() => handleRoleUpdate(user._id, user.role)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                               user.role === "admin"
-                                ? "text-rose-600 border-rose-600 hover:bg-rose-50"
-                                : "text-blue-600 border-blue-600 hover:bg-blue-50"
+                                ? "bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40"
+                                : "bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40"
                             }`}
                             title={
-                              user.role === "admin" ? "Make User" : "Make Admin"
+                              user.role === "admin"
+                                ? "Demote to User"
+                                : "Promote to Admin"
                             }
                           >
                             {user.role === "admin" ? (
                               <>
-                                <UserIcon className="w-4 h-4" />
-                                <span className="text-xs font-medium">
-                                  User
-                                </span>
+                                <UserIcon className="w-3.5 h-3.5" />
+                                Make User
                               </>
                             ) : (
                               <>
-                                <Shield className="w-4 h-4" />
-                                <span className="text-xs font-medium">
-                                  Admin
-                                </span>
+                                <Shield className="w-3.5 h-3.5" />
+                                Make Admin
                               </>
                             )}
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user._id)}
-                            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-red-600 border border-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete User"
+                            className="p-1.5 hover:bg-gray-100 rounded text-rose-600 hover:text-rose-700 dark:hover:bg-gray-700 transition-colors"
+                            title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
-                            <span className="text-xs font-medium">Delete</span>
                           </button>
                         </div>
                       </td>
@@ -344,20 +358,20 @@ const UsersContent = ({ initialUsers = [] }) => {
                     onClick={() => handleRoleUpdate(user._id, user.role)}
                     className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border transition-colors bg-white/80 backdrop-blur-sm ${
                       user.role === "admin"
-                        ? "text-rose-600 border-rose-600 hover:bg-rose-50"
-                        : "text-blue-600 border-blue-600 hover:bg-blue-50"
+                        ? "text-blue-600 border-blue-200 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-900/30"
+                        : "text-purple-600 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/30"
                     }`}
                     title={user.role === "admin" ? "Make User" : "Make Admin"}
                   >
                     {user.role === "admin" ? (
                       <>
                         <UserIcon className="w-3.5 h-3.5" />
-                        <span className="text-xs font-medium">User</span>
+                        <span className="text-xs font-medium">Make User</span>
                       </>
                     ) : (
                       <>
                         <Shield className="w-3.5 h-3.5" />
-                        <span className="text-xs font-medium">Admin</span>
+                        <span className="text-xs font-medium">Make Admin</span>
                       </>
                     )}
                   </button>
@@ -405,12 +419,18 @@ const UsersContent = ({ initialUsers = [] }) => {
 
                   <div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(
-                        user.role,
-                      )}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
+                        user.role === "admin"
+                          ? "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
+                          : "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
+                      }`}
                     >
-                      <Shield className="w-3 h-3" />
-                      {user.role || "user"}
+                      {user.role === "admin" ? (
+                        <Shield className="w-3 h-3" />
+                      ) : (
+                        <UserIcon className="w-3 h-3" />
+                      )}
+                      <span className="capitalize">{user.role || "user"}</span>
                     </span>
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                       <Calendar className="w-4 h-4" />

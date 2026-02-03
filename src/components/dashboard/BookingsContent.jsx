@@ -22,6 +22,9 @@ import {
   MapPin,
   User,
   Info,
+  FileText,
+  MessageSquare,
+  MoreHorizontal
 } from "lucide-react";
 import Swal from "sweetalert2";
 import {
@@ -39,7 +42,7 @@ const BookingsContent = ({ allBookig = [], user }) => {
   const itemsPerPage = 9;
 
   const bookings =
-    Array.isArray(allBookig) && allBookig.length > 0 ? allBookig : [];
+    Array.isArray(allBookig) && allBookig.len6gth > 0 ? allBookig : [];
 
   // Helper to clean image URLs (remove backticks/quotes)
   const cleanImageUrl = (url) => {
@@ -317,32 +320,58 @@ const BookingsContent = ({ allBookig = [], user }) => {
           >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-rose-100/40 dark:bg-rose-900/20 border-b border-gray-100 dark:border-gray-800">
+                <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Provider
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
+                      </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Client
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Order
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Schedule
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Status
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Customer
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Cost
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Payment
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-rose-900 dark:text-rose-100 uppercase tracking-wider">
-                      Actions
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Delivery
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Items
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Fulfillment
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody className="divide-y divide-gray-100 bg-white">
                   {currentBookings.map((item) => {
-                    const status = getStatusConfig(item.status);
-                    const StatusIcon = status.icon;
+                    const statusLower = (item.status || "").toLowerCase();
+                    const isPaymentSuccess = statusLower === "confirmed" || statusLower === "completed";
+                    const paymentLabel = isPaymentSuccess ? "Success" : "Pending";
+                    const paymentColor = isPaymentSuccess 
+                      ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
+                      : "text-amber-500 border-amber-200 bg-amber-50";
+                    const paymentDot = isPaymentSuccess ? "bg-emerald-500" : "bg-amber-500";
+
+                    const isFulfilled = statusLower === "confirmed" || statusLower === "completed";
+                    const fulfillmentLabel = isFulfilled ? "Fulfilled" : "Unfulfilled";
+                    const fulfillmentColor = isFulfilled 
+                      ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
+                      : "text-rose-500 border-rose-200 bg-rose-50";
+                    const fulfillmentDot = isFulfilled ? "bg-emerald-500" : "bg-rose-500";
 
                     return (
                       <motion.tr
@@ -350,145 +379,68 @@ const BookingsContent = ({ allBookig = [], user }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-                        className="group transition-colors"
+                        className="group transition-colors hover:bg-gray-50"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-rose-50 dark:bg-gray-800 flex items-center justify-center border border-rose-100 dark:border-gray-700 text-rose-500 font-medium text-lg overflow-hidden relative">
-                              {item.user?.image ? (
-                                <img
-                                  src={cleanImageUrl(item.user.image)}
-                                  alt={item.user.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                item.user?.name?.charAt(0).toUpperCase() || "P"
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                {item.user?.name || "Unknown Provider"}
-                              </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <Briefcase className="w-3 h-3" />
-                                {item.serviceName || "Service"}
-                              </div>
-                              <div className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                                <Mail className="w-3 h-3" />
-                                {item.user?.email || "No Email"}
-                              </div>
-                            </div>
+                          <div className="flex items-center">
+                            <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-gray-800 flex items-center justify-center border border-blue-100 dark:border-gray-700 text-blue-500 font-medium text-lg overflow-hidden relative">
-                              {user?.image ? (
-                                <img
-                                  src={cleanImageUrl(user.image)}
-                                  alt={user.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                user?.name?.charAt(0).toUpperCase() || "M"
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                {user?.name || "Me"}
-                              </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                <span className="truncate max-w-[150px]" title={item.bookingDetails?.location?.address || item.bookingDetails?.location || "No Address"}>
-                                  {item.bookingDetails?.location?.address || item.bookingDetails?.location || "No Address"}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                           #{item._id.slice(-4)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           {formatDate(item.createdAt)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                           {item.user?.name || "Unknown"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex flex-col gap-1 text-sm text-gray-500 dark:text-gray-400">
+                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${paymentColor}`}>
+                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${paymentDot}`}></span>
+                             {paymentLabel}
+                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           ${(item.financials?.totalCost || 0).toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           N/A
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                           {item.bookingDetails?.duration || 1} items
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${fulfillmentColor}`}>
+                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${fulfillmentDot}`}></span>
+                             {fulfillmentLabel}
+                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              {formatDate(item.createdAt)}
-                            </div>
-                            {item.bookingDetails?.dutyTime && (
-                              <div className="flex items-center gap-2 text-xs text-rose-500">
-                                <Clock className="w-3.5 h-3.5" />
-                                <span className="truncate max-w-[150px]" title={item.bookingDetails.dutyTime}>
-                                  {item.bookingDetails.dutyTime}
-                                </span>
-                              </div>
-                            )}
-                            {item.bookingDetails?.moreInfo && (
-                              <div className="flex items-center gap-2 text-xs text-gray-400">
-                                <Info className="w-3.5 h-3.5" />
-                                <span className="truncate max-w-[150px]" title={item.bookingDetails.moreInfo}>
-                                  {item.bookingDetails.moreInfo}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4" />
-                              {item.bookingDetails?.duration || 0} Hours
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${status.light} ${status.border}`}
-                          >
-                            <StatusIcon className="w-3 h-3" />
-                            {status.label}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
-                              <DollarSign className="w-4 h-4" />
-                              {(item.financials?.totalCost || 0).toFixed(2)}
-                            </div>
-                            <span className="text-xs text-gray-400 flex items-center gap-1">
-                               <span>${item.servicePricePerHour || 0}/hr</span>
-                               <span className="w-1 h-1 rounded-full bg-gray-300" />
-                               <span>{item.bookingDetails?.duration || 0}h</span>
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end gap-2">
-                            {item.status === "confirmed" ? (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 font-medium text-xs">
-                                <CheckCircle className="w-4 h-4" />
-                                Confirmed
-                              </span>
-                            ) : (
-                              <>
-                                {item.status === "pending" && (
-                                  <button
-                                    onClick={() => handleConfirm(item._id)}
-                                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-emerald-600 border border-emerald-600 hover:bg-emerald-50 transition-colors"
-                                    title="Confirm Booking"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
-                                    <span className="text-xs font-medium">
-                                      Confirm
-                                    </span>
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => handleDelete(item._id)}
-                                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-red-600 border border-red-600 hover:bg-red-50 transition-colors"
-                                  title="Delete Booking"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                  <span className="text-xs font-medium">
-                                    Delete
-                                  </span>
+                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                                    <FileText className="w-4 h-4" />
                                 </button>
-                              </>
-                            )}
-                          </div>
+                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
+                                    <MessageSquare className="w-4 h-4" />
+                                </button>
+                                 {item.status === "pending" && (
+                                     <button
+                                        onClick={() => handleConfirm(item._id)}
+                                        className="p-1 hover:bg-gray-100 rounded text-emerald-500 hover:text-emerald-700"
+                                        title="Confirm"
+                                     >
+                                        <CheckCircle className="w-4 h-4" />
+                                     </button>
+                                 )}
+                                  <button
+                                    onClick={() => handleDelete(item._id)}
+                                    className="p-1 hover:bg-gray-100 rounded text-rose-500 hover:text-rose-700"
+                                    title="Delete"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                            </div>
                         </td>
                       </motion.tr>
                     );

@@ -15,6 +15,10 @@ import {
   Search,
   Filter,
   MoreVertical,
+  FileText,
+  MessageSquare,
+  CheckCircle,
+  MoreHorizontal,
   Edit,
   Trash2,
   Eye,
@@ -329,37 +333,64 @@ const ProviderJobsContent = ({ caregivers }) => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700/50 border-b border-gray-200 dark:border-gray-700">
-                  <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Profile
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="pl-6 pr-3 py-4 text-left">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                    />
                   </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Role & Experience
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Order
                   </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Location
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Date
                   </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Rate
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Customer
                   </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Rating
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Payment
                   </th>
-                  <th className="px-8 py-5 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Actions
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Total
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Delivery
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Items
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Fulfillment
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Action
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {currentJobs.length > 0 ? (
-                  currentJobs.map((job) => (
+                  currentJobs.map((job, i) => (
                     <tr
                       key={job._id}
-                      className="group hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-colors"
+                      className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
-                      <td className="px-8 py-5 whitespace-nowrap">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white dark:border-gray-600 shadow-md group-hover:scale-105 transition-transform duration-300">
+                      <td className="pl-6 pr-3 py-4">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        #{1000 + i}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {new Date().toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
                             <img
                               src={job.image}
                               alt={job.name}
@@ -367,77 +398,53 @@ const ProviderJobsContent = ({ caregivers }) => {
                             />
                           </div>
                           <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-base">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
                               {job.name}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]">
-                              {job.publishEmail}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 whitespace-nowrap">
-                        <div className="flex flex-col gap-1">
-                          <span className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <div className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
-                              <Briefcase className="w-3.5 h-3.5" />
                             </div>
-                            {job.role}
-                          </span>
-                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 pl-8">
-                            {job.experience} Exp
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5 rounded-full w-fit">
-                          <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                          <span className="text-sm font-medium">
-                            {job.location}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 whitespace-nowrap">
-                        <div className="flex items-center gap-1 text-gray-900 dark:text-white font-bold text-base">
-                          <DollarSign className="w-4 h-4 text-emerald-500" />
-                          {job.rate}
-                          <span className="text-xs text-gray-400 font-normal">
-                            /hr
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/30 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                            <span className="text-sm font-bold text-amber-700 dark:text-amber-400">
-                              {job.rating}
-                            </span>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {job.publishEmail}
+                            </div>
                           </div>
-                          <span className="text-xs text-gray-400 font-medium">
-                            ({job.reviews} reviews)
-                          </span>
                         </div>
                       </td>
-                      <td className="px-8 py-5 whitespace-nowrap text-right">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                          Active
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ${job.rate}/hr
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {job.location}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {job.role}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+                          {job.rating} Stars
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleViewClick(job)}
-                            className="p-2.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all hover:scale-110"
-                            title="View Details"
+                            className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            title="View"
                           >
-                            <Eye className="w-4 h-4" />
+                            <FileText className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleEditClick(job)}
-                            className="p-2.5 text-amber-500 bg-amber-50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-xl transition-all hover:scale-110 shadow-sm"
+                            className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteClick(job._id)}
-                            className="p-2.5 text-rose-500 bg-rose-50 dark:bg-rose-900/10 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-xl transition-all hover:scale-110 shadow-sm"
+                            className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -448,7 +455,7 @@ const ProviderJobsContent = ({ caregivers }) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
+                    <td colSpan="10" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center text-gray-400">
                         <Search className="w-12 h-12 mb-3 opacity-20" />
                         <p className="text-lg font-medium">

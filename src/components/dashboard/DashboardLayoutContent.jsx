@@ -71,7 +71,7 @@ const DashboardLayoutContent = ({ children }) => {
         ]
       : [
           { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-          { name: "My Caregivers", href: "/dashboard/jobs", icon: Calendar },
+          { name: "My Caregivers", href: "/dashboard/mycaregiver", icon: Calendar },
           { name: "My Services", href: "/dashboard/services", icon: Briefcase },
           { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
           { name: "Profile", href: "/dashboard/profile", icon: User },

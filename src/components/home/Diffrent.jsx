@@ -56,7 +56,7 @@ const Diffrent = () => {
       icon: Moon,
       color: "bg-indigo-100 text-indigo-600",
       gradient: "from-indigo-500 to-purple-600",
-      description: "Evening care for your special moments",
+      description: "Evening care for your special ",
       popular: true,
     },
     {
@@ -440,7 +440,7 @@ const Diffrent = () => {
           >
             <Link
               href="/caregivers"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
+              className="inline-flex items-center gap-3 px-8 py-2 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
             >
               <Users className="w-5 h-5" />
               View All {topCaregivers.length * 12}+ Caregivers
