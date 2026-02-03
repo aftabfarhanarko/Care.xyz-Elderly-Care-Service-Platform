@@ -30,6 +30,9 @@ import {
   CalendarDays,
   FileText,
   MessageSquare,
+  User,
+  Phone,
+  CreditCard,
 } from "lucide-react";
 import { useDashboard } from "./DashboardLayoutContent";
 
@@ -113,22 +116,37 @@ const OverviewContent = () => {
 
   const stats = dynamicStats;
 
-  const dynamicListData = (dashboardData?.recentBookings || []).map((item) => ({
-    id: item._id,
-    client: item.user?.name || "Unknown",
-    service: item.serviceName || "Service",
-    date: item.createdAt
-      ? new Date(item.createdAt).toLocaleDateString()
-      : "N/A",
-    time: item.bookingDetails?.duration
-      ? `${item.bookingDetails.duration} days`
-      : "N/A",
-    status: item.status,
-    price: `$${item.financials?.totalCost || 0}`,
-    user: item.user,
-  }));
+  const serviceListData = (dashboardData?.recentServiceBookings || []).map(
+    (item) => ({
+      id: item._id,
+      client: item.user?.name || "Unknown",
+      service: item.serviceName || "Service",
+      date: item.createdAt
+        ? new Date(item.createdAt).toLocaleDateString()
+        : "N/A",
+      time: item.bookingDetails?.duration
+        ? `${item.bookingDetails.duration} days`
+        : "N/A",
+      status: item.status,
+      price: `$${item.financials?.totalCost || 0}`,
+      user: item.user,
+    }),
+  );
 
-  const listData = dynamicListData;
+  const caregiverListData = (dashboardData?.recentCaregiverBookings || []).map(
+    (item) => ({
+      id: item._id,
+      client: item.user?.name || "Unknown",
+      service: item.caregiverName || "Caregiver", // Using service field for caregiver name to reuse table logic if possible
+      date: item.createdAt
+        ? new Date(item.createdAt).toLocaleDateString()
+        : "N/A",
+      time: item.days ? `${item.days} days` : "N/A",
+      status: item.status,
+      price: `$${item.totalCost || 0}`, // Assuming totalCost is directly available
+      user: item.user,
+    }),
+  );
 
   // ── Chart Data ───────────────────────────────────────────
   const chartData = (dashboardData?.chartData || []).map((d) => ({
@@ -149,6 +167,20 @@ const OverviewContent = () => {
           hour12: true,
         })
       : "Just now",
+  }));
+
+  // ── Recent Users ─────────────────────────────────────────
+  const recentUsers = (dashboardData?.recentUsers || []).map((user) => ({
+    id: user._id,
+    name: user.name || "Unknown",
+    email: user.email || "No Email",
+    contact: user.contact || "N/A",
+    nidNumber: user.nidNumber || "N/A",
+    role: user.role || "user",
+    image: user.profileImage || user.image || null,
+    joined: user.createdAt
+      ? new Date(user.createdAt).toLocaleDateString()
+      : "N/A",
   }));
 
   return (
@@ -188,8 +220,6 @@ const OverviewContent = () => {
             </p>
           </div>
         </div>
-
-    
       </motion.div>
 
       {/* Stats Grid – Premium glass + gradient cards */}
@@ -389,17 +419,17 @@ const OverviewContent = () => {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Upcoming Bookings / Jobs – elegant table */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        {/* Recent Service Bookings */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="lg:col-span-2 space-y-6"
+          className="space-y-6"
         >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {userRole === "user" ? "Upcoming Bookings" : "Upcoming Jobs"}
+              Recent Service Bookings
             </h2>
             <button className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center gap-1 group">
               View All
@@ -414,121 +444,166 @@ const OverviewContent = () => {
               <table className="min-w-full">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
-                      <div className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
-                      </div>
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Order
-                    </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
+                      Service
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Payment
+                      Status
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Total
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Delivery
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Items
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Fulfillment
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 bg-white">
-                  {listData.map((item, i) => {
-                     const statusLower = (item.status || "").toLowerCase();
-                     const isPaymentSuccess = statusLower === "confirmed" || statusLower === "completed";
-                     const paymentLabel = isPaymentSuccess ? "Success" : "Pending";
-                     const paymentColor = isPaymentSuccess 
-                       ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
-                       : "text-amber-500 border-amber-200 bg-amber-50";
-                     const paymentDot = isPaymentSuccess ? "bg-emerald-500" : "bg-amber-500";
- 
-                     const isFulfilled = statusLower === "confirmed" || statusLower === "completed";
-                     const fulfillmentLabel = isFulfilled ? "Fulfilled" : "Unfulfilled";
-                     const fulfillmentColor = isFulfilled 
-                       ? "text-emerald-500 border-emerald-200 bg-emerald-50" 
-                       : "text-rose-500 border-rose-200 bg-rose-50";
-                     const fulfillmentDot = isFulfilled ? "bg-emerald-500" : "bg-rose-500";
+                  {serviceListData.map((item, i) => {
+                    const statusLower = (item.status || "").toLowerCase();
+                    const isPaymentSuccess =
+                      statusLower === "confirmed" ||
+                      statusLower === "completed";
+                    const paymentLabel = isPaymentSuccess
+                      ? "Success"
+                      : "Pending";
+                    const paymentColor = isPaymentSuccess
+                      ? "text-emerald-500 border-emerald-200 bg-emerald-50"
+                      : "text-amber-500 border-amber-200 bg-amber-50";
+                    const paymentDot = isPaymentSuccess
+                      ? "bg-emerald-500"
+                      : "bg-amber-500";
 
                     return (
-                    <motion.tr
-                      key={item.id}
-                      custom={i}
-                      variants={tableRowVariants}
-                      initial="hidden"
-                      animate="visible"
-                      className="group transition-colors hover:bg-gray-50"
-                    >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-rose-600 focus:ring-rose-500 h-4 w-4" />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {typeof item.id === "number"
-                        ? `#${1000 + item.id}`
-                        : `#${item.id.slice(-6)}`}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.date}
-                    </td>
+                      <motion.tr
+                        key={item.id}
+                        custom={i}
+                        variants={tableRowVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="group transition-colors hover:bg-gray-50"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.date}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                           {userRole === "user" ? item.sitter : item.client}
+                          {item.service}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${paymentColor}`}>
-                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${paymentDot}`}></span>
-                             {paymentLabel}
-                           </span>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${paymentColor}`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full mr-1.5 ${paymentDot}`}
+                            ></span>
+                            {item.status}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                           {item.price}
+                          {item.price}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                           N/A
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                           1 item
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${fulfillmentColor}`}>
-                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${fulfillmentDot}`}></span>
-                             {fulfillmentLabel}
-                           </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div className="flex items-center gap-2">
-                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
-                                    <FileText className="w-4 h-4" />
-                                </button>
-                                <button className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700">
-                                    <MessageSquare className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </td>
-                    </motion.tr>
-                  )})}
+                      </motion.tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
         </motion.div>
 
+        {/* Recent Caregiver Bookings */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Recent Caregiver Bookings
+            </h2>
+            <button className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center gap-1 group">
+              View All
+              <span className="group-hover:translate-x-0.5 transition-transform">
+                →
+              </span>
+            </button>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5">
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Caregiver
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {caregiverListData.map((item, i) => {
+                    const statusLower = (item.status || "").toLowerCase();
+                    const isPaymentSuccess =
+                      statusLower === "confirmed" ||
+                      statusLower === "completed";
+                    const paymentLabel = isPaymentSuccess
+                      ? "Success"
+                      : "Pending";
+                    const paymentColor = isPaymentSuccess
+                      ? "text-emerald-500 border-emerald-200 bg-emerald-50"
+                      : "text-amber-500 border-amber-200 bg-amber-50";
+                    const paymentDot = isPaymentSuccess
+                      ? "bg-emerald-500"
+                      : "bg-amber-500";
+
+                    return (
+                      <motion.tr
+                        key={item.id}
+                        custom={i}
+                        variants={tableRowVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="group transition-colors hover:bg-gray-50"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {item.service}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${paymentColor}`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full mr-1.5 ${paymentDot}`}
+                            ></span>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.price}
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Recent Activity – clean timeline style */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -576,10 +651,83 @@ const OverviewContent = () => {
               ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
-              <button className="w-full py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-rose-500 transition-colors">
-                View All Activity
-              </button>
+        
+          </div>
+        </motion.div>
+
+        {/* Recent Registered Users */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6, duration: 0.7 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              New Users
+            </h2>
+            <button className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center gap-1 group">
+              View All
+              <span className="group-hover:translate-x-0.5 transition-transform">
+                →
+              </span>
+            </button>
+          </div>
+
+          <div className="rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl p-6 shadow-xl shadow-rose-500/5">
+            <div className="space-y-4">
+              {recentUsers.map((user, i) => (
+                <motion.div
+                  key={user.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 + i * 0.1 }}
+                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-white dark:hover:bg-gray-700/50 transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700 group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      {user.image ? (
+                        <img
+                          src={user.image}
+                          alt={user.name}
+                          className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-900/30 dark:to-orange-900/30 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 shadow-sm text-rose-600 dark:text-rose-400 font-bold">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-rose-500 transition-colors">
+                        {user.name}
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {user.email}
+                      </p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[10px] text-gray-400">
+                        <div className="flex items-center gap-1">
+                          <Phone className="w-3 h-3" />
+                          <span>{user.contact}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <CreditCard className="w-3 h-3" />
+                          <span>NID: {user.nidNumber}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 capitalize">
+                      {user.role}
+                    </span>
+                    <p className="text-[10px] text-gray-400 mt-1 font-medium">
+                      {user.joined}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </motion.div>

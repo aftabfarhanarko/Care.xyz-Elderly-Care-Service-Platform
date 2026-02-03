@@ -504,7 +504,11 @@ export const getMessagesData = async () => {
 export const getAdminDataOverview = async () => {
   try {
     const bookingsCollection = dbConnect(collections.BOOKING);
+    const bookingCaregiversCollection = dbConnect(
+      collections.BOOKINGCAREGIVERS,
+    );
     const reviewServicesCollection = dbConnect(collections.REVIEWSERVICES);
+    const usersCollection = dbConnect(collections.USER);
 
     // 1. Stats Aggregation
     const statsPipeline = [
@@ -513,7 +517,11 @@ export const getAdminDataOverview = async () => {
           _id: null,
           totalEarnings: {
             $sum: {
-              $cond: [{ $eq: ["$status", "confirmed"] }, "$financials.totalCost", 0],
+              $cond: [
+                { $eq: ["$status", "confirmed"] },
+                "$financials.totalCost",
+                0,
+              ],
             },
           },
           activeJobs: {
@@ -554,8 +562,8 @@ export const getAdminDataOverview = async () => {
       { $limit: 6 }, // Last 6 months
     ];
 
-    // 3. Recent Bookings
-    const recentBookingsPipeline = [
+    // 3. Recent Service Bookings
+    const recentServiceBookingsPipeline = [
       { $sort: { createdAt: -1 } },
       { $limit: 5 },
       {
@@ -572,7 +580,25 @@ export const getAdminDataOverview = async () => {
       },
     ];
 
-    // 4. Rating Aggregation
+    // 4. Recent Caregiver Bookings
+    const recentCaregiverBookingsPipeline = [
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          caregiverName: 1, // Assuming caregiverName is in the document, or we might need to lookup. Let's assume structure is similar for now or check.
+          "user.name": 1,
+          "user.email": 1,
+          totalCost: 1, // Caregiver bookings might have totalCost directly or in financials. Let's check schema if possible, or project standard fields.
+          status: 1,
+          createdAt: 1,
+          days: 1, // Caregiver bookings usually have days
+        },
+      },
+    ];
+
+    // 5. Rating Aggregation
     const ratingPipeline = [
       {
         $group: {
@@ -582,7 +608,7 @@ export const getAdminDataOverview = async () => {
       },
     ];
 
-    // 5. Pie Chart Aggregation (Service Distribution)
+    // 6. Pie Chart Aggregation (Service Distribution)
     const piePipeline = [
       {
         $group: {
@@ -593,7 +619,7 @@ export const getAdminDataOverview = async () => {
       { $limit: 5 },
     ];
 
-    // 6. Recent Activity (using bookings for now, can be expanded)
+    // 7. Recent Activity (using bookings for now, can be expanded)
     const activityPipeline = [
       { $sort: { updatedAt: -1, createdAt: -1 } },
       { $limit: 5 },
@@ -609,20 +635,45 @@ export const getAdminDataOverview = async () => {
       },
     ];
 
+    // 8. Recent Users
+    const recentUsersPipeline = [
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          name: 1,
+          email: 1,
+          contact: 1,
+          nidNumber: 1,
+          role: 1,
+          profileImage: 1,
+          image: 1,
+          createdAt: 1,
+        },
+      },
+    ];
+
     const [
       statsResult,
       chartResult,
-      recentBookings,
+      recentServiceBookings,
+      recentCaregiverBookings,
       ratingResult,
       pieResult,
       activityResult,
+      recentUsers,
     ] = await Promise.all([
       bookingsCollection.aggregate(statsPipeline).toArray(),
       bookingsCollection.aggregate(chartPipeline).toArray(),
-      bookingsCollection.aggregate(recentBookingsPipeline).toArray(),
+      bookingsCollection.aggregate(recentServiceBookingsPipeline).toArray(),
+      bookingCaregiversCollection
+        .aggregate(recentCaregiverBookingsPipeline)
+        .toArray(),
       reviewServicesCollection.aggregate(ratingPipeline).toArray(),
       bookingsCollection.aggregate(piePipeline).toArray(),
       bookingsCollection.aggregate(activityPipeline).toArray(),
+      usersCollection.aggregate(recentUsersPipeline).toArray(),
     ]);
 
     // Format Chart Data
@@ -695,8 +746,10 @@ export const getAdminDataOverview = async () => {
       },
       chartData: formattedChartData,
       pieData: formattedPieData,
-      recentBookings,
+      recentServiceBookings,
+      recentCaregiverBookings,
       recentActivity: formattedActivity,
+      recentUsers,
     };
   } catch (error) {
     console.error("Error in getAdminDataOverview:", error);
@@ -708,7 +761,10 @@ export const getAdminDataOverview = async () => {
         rating: 0,
       },
       chartData: [],
-      recentBookings: [],
+      recentServiceBookings: [],
+      recentCaregiverBookings: [],
+      recentActivity: [],
+      recentUsers: [],
     };
   }
 };
