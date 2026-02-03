@@ -95,6 +95,34 @@ const AllFile = () => {
       icon: Home,
     },
   ];
+  const faqs = [
+    {
+      question: "How do I book a caregiver?",
+      answer:
+        "Go to Services, choose a caregiver or service, and tap Book Now. You’ll confirm details before finalizing.",
+    },
+    {
+      question: "Can I leave a review after booking?",
+      answer:
+        "Yes. After a booking is completed, you can share feedback to help others choose confidently.",
+    },
+    {
+      question: "Is the platform mobile friendly?",
+      answer:
+        "Yes. The entire experience is optimized for mobile, tablet, and desktop screen sizes.",
+    },
+    {
+      question: "What payment methods are supported?",
+      answer:
+        "We support common online payment methods. Exact options depend on your region and availability.",
+    },
+    {
+      question: "How are caregivers vetted?",
+      answer:
+        "Caregivers are verified for identity and experience. Ratings and reviews help maintain quality.",
+    },
+  ];
+  const [activeFaq, setActiveFaq] = React.useState(null);
 
   return (
     <div className="overflow-hidden">
@@ -176,7 +204,7 @@ const AllFile = () => {
       </section>
 
       {/* 2. Expert Care Section */}
-      <section className="py-24 bg-gray-50/50 relative">
+      <section className="py-24  relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left: Image Composition */}
@@ -275,7 +303,7 @@ const AllFile = () => {
       </section>
 
       {/* 3. Bottom Cards Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -342,7 +370,7 @@ const AllFile = () => {
       </section>
 
       {/* 4. Caring is a way of life Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-24  relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -435,7 +463,7 @@ const AllFile = () => {
       </section>
 
       {/* 5. Choose The Best Section (New) */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-24  relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Column: Text & Hero Image */}
@@ -550,6 +578,66 @@ const AllFile = () => {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24  relative overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-[520px] h-[520px] bg-rose-100/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-24 -left-24 w-[520px] h-[520px] bg-purple-100/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-3"
+            >
+              FAQs
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-extrabold text-gray-900"
+            >
+              Frequently Asked{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">
+                Questions
+              </span>
+            </motion.h2>
+          </div>
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faqs.map((item, i) => {
+              const open = activeFaq === i;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all"
+                >
+                  <button
+                    onClick={() => setActiveFaq(open ? null : i)}
+                    className="w-full flex items-center justify-between text-left p-6"
+                  >
+                    <span className="text-gray-900 font-bold text-lg">
+                      {item.question}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-gray-500 transition-transform ${
+                        open ? "rotate-180" : "rotate-0"
+                      }`}
+                    />
+                  </button>
+                  {open && (
+                    <div className="px-6 pb-6 -mt-2 text-gray-600 leading-relaxed">
+                      {item.answer}
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
