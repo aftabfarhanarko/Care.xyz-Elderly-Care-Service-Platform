@@ -5,9 +5,9 @@ import { getServerSession } from 'next-auth';
 
  const JobsPage = async() => {
     const {user} = await getServerSession(authOptions)
-    console.log(user);
+    // console.log(user);
     const caregivers = await getMyAddcaregivers(user?.email);
-    console.log(caregivers);
+    // console.log(caregivers);
     
     
     return <ProviderJobsContent caregivers={caregivers} />;

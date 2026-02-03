@@ -89,7 +89,7 @@ const FillFrom = () => {
         setAvailableAreas([]);
       }, 3000);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      // console.error("Error submitting form:", error);
       toast.error("Failed to send message. Please try again.");
     } finally {
       setLoading(false);
@@ -135,7 +135,7 @@ const FillFrom = () => {
               <span>Contact Support</span>
             </div>
             <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold text-rose-600 dark:text-rose-500 leading-tight">
-              Let's Start a{" "}
+              Lets Start a{" "}
               <span className="text-rose-600 dark:text-rose-500">
                 Conversation
               </span>

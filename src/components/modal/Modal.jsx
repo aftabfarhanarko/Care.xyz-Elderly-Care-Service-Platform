@@ -268,7 +268,7 @@ const Modal = ({ isOpen, onClose, service, locationData, SetIsOpenModal, onBooki
           };
           const result = await savedServicesData(bookingData);
 
-          console.log("Booking Request Data:", result);
+          // console.log("Booking Request Data:", result);
 
           // Invalidate the booking status query to update the UI immediately
           queryClient.invalidateQueries([

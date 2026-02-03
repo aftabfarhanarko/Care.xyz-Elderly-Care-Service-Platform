@@ -9,7 +9,7 @@ export const metadata = {
 
 const page = async () => {
   const caregivers = await getcaregiversData();
-  console.log("getcaregiversData", caregivers);
+  // console.log("getcaregiversData", caregivers);
 
   return (
     <div className=" pt-10">

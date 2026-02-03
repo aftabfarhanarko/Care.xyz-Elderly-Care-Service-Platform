@@ -6,10 +6,10 @@ import { myCaregiverBookings } from '@/actions/serverData/dashbordApi';
 
 const FavoritesPage = async () => {
   const session = await getServerSession(authOptions);
-  console.log("My Session", session?.user?.email);
+  // console.log("My Session", session?.user?.email);
   const email = session?.user?.email
   const data = await myCaregiverBookings(email);
-  console.log(data);
+  // console.log(data);
   
   
   return (

@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
 const page = async ({ params }) => {
   const { id } = await params;
   const caregiver = await getSingleCaregiver(id);
-  console.log(caregiver);
+  // console.log(caregiver);
 
   return (
     <div>

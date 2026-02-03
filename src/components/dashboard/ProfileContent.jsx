@@ -82,7 +82,7 @@ const ProfileContent = ({ realUser }) => {
       }
       // In a real app, you would call your API here
       console.log("Updated User Data:", updatedData);
-      console.log("New Image URL:", result);
+      // console.log("New Image URL:", result);
 
       // Ideally, you would trigger a re-fetch of user data here
     } catch (error) {

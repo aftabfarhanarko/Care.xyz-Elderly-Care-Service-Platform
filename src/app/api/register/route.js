@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 export async function POST(req) {
   try {
     const submitData = await req.json();
-    console.log("Register API Data:", submitData);
+    // console.log("Register API Data:", submitData);
 
     // 1️⃣ Required field validation
     if (!submitData?.name || !submitData?.email || !submitData?.password) {
@@ -58,7 +58,7 @@ export async function POST(req) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Register API Error:", error);
+    // console.error("Register API Error:", error);
     return NextResponse.json(
       { success: false, message: "Something went wrong. Please try again later" },
       { status: 500 }

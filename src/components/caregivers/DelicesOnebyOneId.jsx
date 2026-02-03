@@ -31,7 +31,7 @@ const CaregiverDetailsPage = ({ caregiver: serverCaregiver }) => {
     queryFn: async () => {
       const query = { caregiverId: caregiver?._id || caregiver?.id };
       const result = await caregiverSingleData(query);
-      console.log("Single Data Result:", result);
+      // console.log("Single Data Result:", result);
       return result;
     },
     enabled: !!(caregiver?._id || caregiver?.id),

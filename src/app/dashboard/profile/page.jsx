@@ -12,7 +12,7 @@ const ProfilePage = async () => {
   const { user } = await getServerSession(authOptions);
 
   const userData = await getCurrentUser(user?.email);
-  console.log("Daata Base Data",userData.user);
+  // console.log("Daata Base Data",userData.user);
   const realUser = userData?.user;
 
   return <ProfileContent realUser={realUser}/>;

@@ -150,7 +150,7 @@ const RegisterFrom = () => {
         createdAt: new Date().toISOString(),
       };
 
-      console.log("Form Data:", submitData);
+      // console.log("Form Data:", submitData);
 
       const response = await fetch("/api/register", {
         method: "POST",
@@ -161,7 +161,7 @@ const RegisterFrom = () => {
       });
 
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
 
       if (result.success) {
         toast.success(result.message);
@@ -196,7 +196,7 @@ const RegisterFrom = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Registration failed. Please try again.");
       setErrors({
         ...errors,

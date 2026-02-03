@@ -500,7 +500,6 @@ export const getMessagesData = async () => {
 };
 
 // Earning Chart Data Get Pipeline
-
 export const getAdminDataOverview = async () => {
   try {
     const bookingsCollection = dbConnect(collections.BOOKING);

@@ -101,7 +101,7 @@ export const fromDataSaved = async (formData) => {
     createdAt: new Date().toISOString(),
   };
   const result = await dbConnect(collections.FROMDATA).insertOne(dataWithDate);
-  console.log("Data", result);
+  // console.log("Data", result);
 
   return {
     acknowledged: result.acknowledged,
@@ -171,7 +171,7 @@ export const singleData = async (query) => {
     if (!session) {
       return null;
     }
-    console.log("MY Session", session.user.email, "My Id", query.service_id);
+    // console.log("MY Session", session.user.email, "My Id", query.service_id);
 
     // Create a flexible query for serviceId to match either String or ObjectId
     let serviceIdCondition = { serviceId: query.service_id };

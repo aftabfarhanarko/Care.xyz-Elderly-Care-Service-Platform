@@ -165,7 +165,7 @@ const CaregiversModal = ({ isOpen, onClose, caregiver, onBookingSuccess }) => {
 
           const saveResult = await caregiverDataSaved(savedData);
 
-          console.log("This Data Saved DB", saveResult);
+          // console.log("This Data Saved DB", saveResult);
 
           // Invalidate the booking status query to update the UI immediately
           queryClient.invalidateQueries(["bookingStatus", caregiver._id || caregiver.id]);

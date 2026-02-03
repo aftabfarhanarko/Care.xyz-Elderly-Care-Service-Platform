@@ -33,7 +33,7 @@ import {
 } from "@/actions/serverData/dashbordApi";
 
 const BookingsContent = ({ allBookig = [], user }) => {
-  console.log(allBookig);
+  // console.log(allBookig);
   
   const router = useRouter();
   const [viewMode, setViewMode] = useState("list");

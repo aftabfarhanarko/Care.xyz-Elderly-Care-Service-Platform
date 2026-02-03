@@ -45,8 +45,8 @@ export const caregiverSingleData = async (query) => {
     }
     return null;
   } catch (error) {
-    console.error("Error fetching single booking data:", error);
-    return null;
+    // console.error("Error fetching single booking data:", error);
+    return error;
   }
 };
 
@@ -78,7 +78,7 @@ export const getCaregiverReviews = async (caregiverId) => {
       _id: review._id.toString(),
     }));
   } catch (error) {
-    console.error("Error fetching reviews:", error);
+    // console.error("Error fetching reviews:", error);
     return [];
   }
 };

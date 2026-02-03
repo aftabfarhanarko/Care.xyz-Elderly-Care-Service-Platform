@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 const ServicesPage = async () => {
     const session = await getServerSession(authOptions);
     const services = await getMyServices(session?.user?.email);
-    console.log(services);
+    // console.log(services);
     
 
     return <MyServicesContent services={services} />;
