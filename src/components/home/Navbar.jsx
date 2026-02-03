@@ -6,22 +6,23 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useSession, signOut } from "next-auth/react";
 import {
-  Heart,
   Menu,
   X,
-  User,
-  LogOut,
   LayoutDashboard,
   Calendar,
   Settings,
   ChevronDown,
   Sun,
   Moon,
-  Bell,
   Zap,
-  Shield,
+  LogOut,
   LogIn,
   UserPlus,
+  Home,
+  Info,
+  Users,
+  Briefcase,
+  Mail,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -31,7 +32,6 @@ const Navbar = () => {
 
   const { data: session } = useSession();
   const user = session?.user || null;
-  // console.log("User Session", session?.user.image);
 
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
@@ -65,16 +65,12 @@ const Navbar = () => {
   const isActive = (path) => pathname === path;
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Caregivers", href: "/caregivers" },
-    { name: "Services", href: "/services" },
-    { name: "Contact", href: "/contact" },
+    { name: "Home", href: "/", icon: Home },
+    { name: "About", href: "/about", icon: Info },
+    { name: "Caregivers", href: "/caregivers", icon: Users },
+    { name: "Services", href: "/services", icon: Briefcase },
+    { name: "Contact", href: "/contact", icon: Mail },
   ];
-
-  if (user) {
-    navLinks.push({ name: "Dashboard", href: "/dashboard" });
-  }
 
   const getInitials = (name) => {
     return (
@@ -89,37 +85,47 @@ const Navbar = () => {
   if (!mounted) return null;
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-950/90 backdrop-blur-2xl border-b border-gray-200/50 dark:border-gray-800/50 py-3 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4  lg:px-0">
+    <nav className="fixed w-full top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-gray-200/40 dark:border-slate-800/40 py-2 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 lg:px-6">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="">
-            <img src="/logo2.png" className=" h-13 w-38"></img>
+          <Link
+            href="/"
+            className="flex-shrink-0 hover:opacity-80 transition-opacity"
+          >
+            <img src="/logo2.png" alt="Logo" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  isActive(link.href)
-                    ? "bg-gradient-to-r from-rose-500/20 to-purple-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                    : "text-gray-600 dark:text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          <div className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 group ${
+                    isActive(link.href)
+                      ? "text-rose-600 dark:text-rose-400"
+                      : "text-gray-700 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400"
+                  }`}
+                >
+                  <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                  {link.name}
+                  {isActive(link.href) && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-rose-500 to-purple-500 rounded-full"></span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center gap-4">
             {/* Theme Toggle */}
-            {/* <button
+            <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all duration-300 focus:outline-none"
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-300"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
@@ -127,21 +133,21 @@ const Navbar = () => {
               ) : (
                 <Moon className="w-5 h-5" />
               )}
-            </button> */}
+            </button>
 
             {/* Divider */}
-            <div className="h-6 w-px bg-gradient-to-b from-gray-200 to-transparent dark:from-gray-700"></div>
+            <div className="w-px h-6 bg-gray-300/40 dark:bg-slate-700/40"></div>
 
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 {/* User Profile Button */}
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/60 hover:border-rose-500/30 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-sm hover:shadow-md group"
+                  className="flex items-center gap-3 px-3 py-2 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-900 border border-gray-200/50 dark:border-slate-700/50 hover:border-rose-400/50 dark:hover:border-rose-500/50 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-rose-500/10 group"
                 >
-                  {/* User Avatar */}
+                  {/* Avatar */}
                   <div className="relative">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-100 to-purple-100 dark:from-rose-900/50 dark:to-purple-900/50 flex items-center justify-center border border-gray-100 dark:border-gray-700 shadow-inner group-hover:scale-105 transition-all duration-300">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400 to-purple-500 flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-lg group-hover:scale-110 transition-transform duration-300">
                       {user?.image ? (
                         <img
                           src={user.image}
@@ -149,39 +155,39 @@ const Navbar = () => {
                           className="w-full h-full rounded-full object-cover"
                         />
                       ) : (
-                        <span className="text-rose-600 dark:text-rose-400 font-bold text-sm">
+                        <span className="text-white font-bold text-xs">
                           {getInitials(user?.name)}
                         </span>
                       )}
                     </div>
-                    <div className="absolute bottom-0.5 right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800 shadow-sm ring-1 ring-white/50 dark:ring-black/50"></div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 shadow-md"></div>
                   </div>
 
-                  {/* User Name */}
-                  <div className="flex flex-col items-start text-left">
-                    <span className="text-sm font-bold text-gray-800 dark:text-gray-100 leading-none mb-1">
+                  {/* Name & Role */}
+                  <div className="hidden sm:flex flex-col items-start text-left">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">
                       {user?.name?.split(" ")[0] || "User"}
                     </span>
-                    <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-gray-100 dark:bg-gray-700/50 px-1.5 py-0.5 rounded-md">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                       {user?.role || "Member"}
                     </span>
                   </div>
 
                   {/* Chevron */}
                   <ChevronDown
-                    className={`w-4 h-4 text-gray-400 group-hover:text-rose-500 transition-colors duration-300 ${
+                    className={`w-4 h-4 text-gray-500 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-all duration-300 ${
                       profileDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
-                {/* Premium Dropdown Menu */}
+                {/* Desktop Dropdown Menu */}
                 {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl py-3 border border-gray-100/50 dark:border-gray-800/50 ring-1 ring-black ring-opacity-5 backdrop-blur-xl transform origin-top-right animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                    {/* Header Section */}
-                    <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800/50 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-800/30 dark:to-transparent">
+                  <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-black/20 dark:shadow-black/40 border border-gray-200/50 dark:border-slate-700/50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                    {/* Profile Header */}
+                    <div className="bg-gradient-to-r from-rose-500/10 to-purple-500/10 dark:from-rose-500/20 dark:to-purple-500/20 px-5 py-4 border-b border-gray-200/50 dark:border-slate-700/50">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-purple-500 flex items-center justify-center border-3 border-white dark:border-gray-800 shadow-lg">
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-rose-400 to-purple-500 flex items-center justify-center border-3 border-white dark:border-slate-800 shadow-lg">
                           {user?.image ? (
                             <img
                               src={user.image}
@@ -189,7 +195,7 @@ const Navbar = () => {
                               className="w-full h-full rounded-full object-cover"
                             />
                           ) : (
-                            <span className="text-white font-bold">
+                            <span className="text-white font-bold text-lg">
                               {getInitials(user?.name)}
                             </span>
                           )}
@@ -201,9 +207,9 @@ const Navbar = () => {
                           <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                             {user?.email}
                           </p>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Zap className="w-3 h-3 text-yellow-500" />
-                            <span className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">
+                          <div className="flex items-center gap-1.5 mt-2">
+                            <Zap className="w-3.5 h-3.5 text-yellow-500" />
+                            <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
                               Premium
                             </span>
                           </div>
@@ -212,49 +218,46 @@ const Navbar = () => {
                     </div>
 
                     {/* Menu Items */}
-                    <div className="p-2 space-y-1">
+                    <div className="py-2 px-2 space-y-1">
                       <Link
                         href="/dashboard"
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-rose-50 hover:to-purple-50 dark:hover:from-rose-950/30 dark:hover:to-purple-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-200 rounded-xl group"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-200 group"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
-                        <LayoutDashboard className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                        <span>Dashboard</span>
-                        <span className="ml-auto text-xs bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 px-2 py-1 rounded-full font-semibold">
+                        <LayoutDashboard className="w-5 h-5 transition-transform group-hover:scale-110" />
+                        <span className="flex-1">Dashboard</span>
+                        <span className="text-xs bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 px-2 py-1 rounded-full font-bold">
                           New
                         </span>
                       </Link>
                       <Link
                         href="/dashboard/bookings"
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-rose-50 hover:to-purple-50 dark:hover:from-rose-950/30 dark:hover:to-purple-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-200 rounded-xl group"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
-                        <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                        <span>My Bookings</span>
-                        <span className="ml-auto text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full font-semibold">
+                        <Calendar className="w-5 h-5 transition-transform group-hover:scale-110" />
+                        <span className="flex-1">My Bookings</span>
+                        <span className="text-xs bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full font-bold">
                           5
                         </span>
                       </Link>
                       <Link
                         href="/dashboard/settings"
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-rose-50 hover:to-purple-50 dark:hover:from-rose-950/30 dark:hover:to-purple-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-200 rounded-xl group"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 group"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
-                        <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <Settings className="w-5 h-5 transition-transform group-hover:scale-110" />
                         <span>Settings</span>
                       </Link>
                     </div>
 
-                    {/* Divider */}
-                    <div className="border-t border-gray-100/50 dark:border-gray-800/50 my-2"></div>
-
-                    {/* Logout Button */}
-                    <div className="p-2">
+                    {/* Logout */}
+                    <div className="border-t border-gray-200/50 dark:border-slate-700/50 p-2">
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all duration-200 group"
+                        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-200 group"
                       >
-                        <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <LogOut className="w-5 h-5 transition-transform group-hover:scale-110" />
                         <span>Sign out</span>
                       </button>
                     </div>
@@ -262,17 +265,17 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold text-sm hover:border-rose-500 hover:text-rose-600 dark:hover:border-rose-400 dark:hover:text-rose-400 transition-all duration-300"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700 hover:border-rose-400 hover:text-rose-600 dark:hover:border-rose-500 dark:hover:text-rose-400 transition-all duration-300"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Log in</span>
                 </Link>
                 <Link
                   href="/register"
-                  className="flex items-center gap-2 px-5 py-2 rounded-full border border-rose-500 text-rose-600 dark:text-rose-400 font-bold text-sm hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all duration-300"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-rose-500 to-purple-500 hover:shadow-lg hover:shadow-rose-500/50 transition-all duration-300"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>Sign up</span>
@@ -282,20 +285,20 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-3">
-            {/* <button
+          <div className="lg:hidden flex items-center gap-2">
+            <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-300"
             >
               {theme === "dark" ? (
                 <Sun className="w-5 h-5" />
               ) : (
                 <Moon className="w-5 h-5" />
               )}
-            </button> */}
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 focus:outline-none transition-all duration-300"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -309,16 +312,13 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-40 bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl animate-in fade-in slide-in-from-right duration-300"
-          style={{ top: "70px", height: "calc(100vh - 70px)" }}
-        >
-          <div className="flex flex-col h-full overflow-y-auto">
+        <div className="lg:hidden absolute top-16 left-0 right-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-gray-200/40 dark:border-slate-800/40 shadow-lg animate-in fade-in slide-in-from-top duration-300">
+          <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
             {/* Mobile User Section */}
             {user && (
-              <div className="px-4 pt-6 pb-4 border-b border-gray-200/50 dark:border-gray-800/50 bg-gradient-to-b from-gray-50/50 to-transparent dark:from-gray-800/30">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-purple-500 flex items-center justify-center border-3 border-white dark:border-gray-800 shadow-lg">
+              <div className="pb-4 mb-4 border-b border-gray-200/40 dark:border-slate-800/40">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-purple-500 flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-lg">
                     {user?.image ? (
                       <img
                         src={user.image}
@@ -326,12 +326,12 @@ const Navbar = () => {
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <span className="text-white font-bold">
+                      <span className="text-white font-bold text-sm">
                         {getInitials(user?.name)}
                       </span>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">
                       {user?.name}
                     </p>
@@ -344,66 +344,69 @@ const Navbar = () => {
             )}
 
             {/* Mobile Nav Links */}
-            <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded-xl font-semibold text-base transition-all duration-300 ${
-                    isActive(link.href)
-                      ? "bg-gradient-to-r from-rose-500/20 to-purple-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+            <div className="space-y-1 mb-4">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      isActive(link.href)
+                        ? "bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-gray-200/50 dark:border-gray-800/50 my-2"></div>
-
             {user ? (
-              <div className="px-4 py-4 space-y-2">
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-gray-700 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition-all duration-300"
-                >
-                  <LayoutDashboard className="w-5 h-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="/dashboard/bookings"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-gray-700 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition-all duration-300"
-                >
-                  <Calendar className="w-5 h-5" />
-                  My Bookings
-                </Link>
-                <Link
-                  href="/dashboard/settings"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-gray-700 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition-all duration-300"
-                >
-                  <Settings className="w-5 h-5" />
-                  Settings
-                </Link>
+              <>
+                <div className="border-t border-gray-200/40 dark:border-slate-800/40 py-4 space-y-2">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-300"
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/dashboard/bookings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    My Bookings
+                  </Link>
+                  <Link
+                    href="/dashboard/settings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300"
+                  >
+                    <Settings className="w-5 h-5" />
+                    Settings
+                  </Link>
+                </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 w-full px-4 py-3 text-base font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all duration-300"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-300"
                 >
                   <LogOut className="w-5 h-5" />
                   Sign out
                 </button>
-              </div>
+              </>
             ) : (
-              <div className="px-4 py-4 space-y-3 mt-auto mb-4">
+              <div className="border-t border-gray-200/40 dark:border-slate-800/40 pt-4 space-y-2">
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-bold hover:border-rose-500 hover:text-rose-600 dark:hover:border-rose-400 dark:hover:text-rose-400 transition-all duration-300"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-semibold hover:border-rose-400 hover:text-rose-600 dark:hover:border-rose-500 dark:hover:text-rose-400 transition-all duration-300"
                 >
                   <LogIn className="w-5 h-5" />
                   <span>Log in</span>
@@ -411,7 +414,7 @@ const Navbar = () => {
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-rose-500 text-rose-600 dark:text-rose-400 font-bold hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all duration-300"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-rose-500 to-purple-500 text-white font-semibold hover:shadow-lg hover:shadow-rose-500/50 transition-all duration-300"
                 >
                   <UserPlus className="w-5 h-5" />
                   <span>Sign up</span>

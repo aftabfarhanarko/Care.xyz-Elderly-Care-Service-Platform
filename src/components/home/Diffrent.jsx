@@ -156,7 +156,6 @@ const Diffrent = () => {
     },
   ];
 
-
   const stats = [
     { icon: Users, value: "50K+", label: "Trusted Caregivers" },
     { icon: Shield, value: "100%", label: "Background Checked" },
@@ -321,7 +320,7 @@ const Diffrent = () => {
           </div>
 
           <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -333,92 +332,77 @@ const Diffrent = () => {
                 variants={fadeInUp}
                 className="group relative"
               >
-                <div className="relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-rose-200">
+                <div className="relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-rose-200 h-full flex flex-col">
                   {/* Featured Badge */}
                   {caregiver.featured && (
-                    <div className="absolute top-4 left-4 z-10">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs font-bold rounded-full shadow-lg">
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-600 text-white text-[10px] font-bold rounded-full shadow-md uppercase tracking-wide">
                         <Sparkles className="w-3 h-3" />
                         Featured
                       </span>
                     </div>
                   )}
 
-                  {/* Image Container */}
-                  <div className="aspect-[3/4] relative overflow-hidden bg-gray-100">
+                  {/* Image Container - Reduced Height */}
+                  <div className="h-56 relative overflow-hidden bg-gray-100 shrink-0">
                     <img
                       src={caregiver.image}
                       alt={caregiver.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      style={{ objectPosition: "top" }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    {/* Availability Badge */}
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-sm font-semibold text-gray-900">
-                          {caregiver.availability}
-                        </span>
-                      </div>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-xl font-bold text-gray-900">
-                            {caregiver.name}
-                          </h3>
-                          {caregiver.verified && (
-                            <CheckCircle className="w-5 h-5 text-blue-500 fill-current" />
-                          )}
-                        </div>
-                        <p className="text-rose-600 font-semibold text-sm">
-                          {caregiver.role}
-                        </p>
+                  {/* Content - Compact */}
+                  <div className="p-5 flex flex-col flex-grow">
+                    <div className="mb-3">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {caregiver.name}
+                        </h3>
+                        {caregiver.verified && (
+                          <CheckCircle className="w-4 h-4 text-blue-500 fill-blue-500/10" />
+                        )}
                       </div>
+                      <p className="text-rose-600 font-bold text-xs uppercase tracking-wide">
+                        {caregiver.role}
+                      </p>
                     </div>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                      <div className="flex items-center">
-                        <Star className="w-5 h-5 text-amber-400 fill-current" />
-                        <span className="font-bold text-gray-900 ml-1.5 text-lg">
-                          {caregiver.rating}
-                        </span>
-                      </div>
-                      <span className="text-gray-500 text-sm">
+                    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-100">
+                      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      <span className="font-bold text-gray-900 text-sm">
+                        {caregiver.rating}
+                      </span>
+                      <span className="text-gray-400 text-xs">
                         ({caregiver.reviews} reviews)
                       </span>
                     </div>
 
-                    {/* Details */}
-                    <div className="space-y-3 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <Award className="w-4 h-4 text-rose-500" />
-                        <span className="font-medium">
-                          {caregiver.yearsExp} years experience
-                        </span>
+                    {/* Details - Compact List */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 font-medium">
+                        <Award className="w-3.5 h-3.5 text-rose-400" />
+                        <span>{caregiver.yearsExp} years exp.</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <MapPin className="w-4 h-4 text-rose-500" />
+                      <div className="flex items-center gap-2 text-xs text-gray-600 font-medium">
+                        <MapPin className="w-3.5 h-3.5 text-rose-400" />
                         <span>{caregiver.location}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <Clock className="w-4 h-4 text-rose-500" />
-                        <span>Responds in {caregiver.responseTime}</span>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 font-medium">
+                        <Clock className="w-3.5 h-3.5 text-rose-400" />
+                        <span>Replying in {caregiver.responseTime}</span>
                       </div>
                     </div>
 
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    {/* Badges - Compact */}
+                    <div className="flex flex-wrap gap-1.5 mb-4 mt-auto">
                       {caregiver.badges.slice(0, 2).map((badge, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-semibold rounded-full"
+                          className="px-2 py-0.5 bg-rose-50 text-rose-600 text-[10px] font-bold rounded-md border border-rose-100"
                         >
                           {badge}
                         </span>
@@ -426,15 +410,17 @@ const Diffrent = () => {
                     </div>
 
                     {/* Price & CTA */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div>
-                        <span className="text-2xl font-bold text-gray-900">
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-extrabold text-gray-900">
                           ${caregiver.hourlyRate}
                         </span>
-                        <span className="text-gray-500 text-sm">/hour</span>
+                        <span className="text-gray-400 text-xs font-medium">
+                          /hr
+                        </span>
                       </div>
-                      <button className="px-6 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                        <MessageCircle className="w-4 h-4" />
+                      <button className="px-4 py-2 bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-1.5">
+                        <MessageCircle className="w-3.5 h-3.5" />
                         Contact
                       </button>
                     </div>
