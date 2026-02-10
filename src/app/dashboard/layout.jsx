@@ -1,5 +1,5 @@
-import React from 'react';
-import DashboardLayoutContent from '@/components/dashboard/DashboardLayoutContent';
+import React from "react";
+import DashboardLayoutContent from "@/components/dashboard/DashboardLayoutContent";
 
 export const metadata = {
   title: {
@@ -12,13 +12,9 @@ export const metadata = {
     follow: false,
   },
 };
-
+ 
 const DashboardLayout = ({ children }) => {
-    return (
-        <DashboardLayoutContent>
-            {children}
-        </DashboardLayoutContent>
-    );
+  return <DashboardLayoutContent>{children}</DashboardLayoutContent>;
 };
 
 export default DashboardLayout;

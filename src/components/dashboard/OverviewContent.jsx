@@ -16,7 +16,10 @@ import {
 } from "recharts";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import { getAdminDataOverview } from "@/actions/serverData/dashbordApi";
+import {
+  getAdminDataOverview,
+  getUserDataOverview,
+} from "@/actions/serverData/dashbordApi";
 import {
   Calendar,
   CheckCircle,
@@ -71,50 +74,86 @@ const OverviewContent = () => {
   const { data: session } = useSession();
 
   const { data: dashboardData, isLoading } = useQuery({
-    queryKey: ["adminOverviewData"],
-    queryFn: getAdminDataOverview,
+    queryKey: ["dashboardOverview", userRole, session?.user?.email],
+    queryFn: async () => {
+      if (userRole === "admin") {
+        return await getAdminDataOverview();
+      } else if (userRole === "user" && session?.user?.email) {
+        return await getUserDataOverview(session.user.email);
+      }
+      return null;
+    },
+    enabled: !!userRole && (userRole === "admin" || !!session?.user?.email),
   });
 
-  const dynamicStats = [
-    {
-      title: "Total Earnings",
-      value: `$${dashboardData?.stats?.totalEarnings || 0}`,
-      icon: DollarSign,
-      color: "from-rose-500 to-pink-600",
-      iconColor: "text-white",
-      trend: "+18%",
-      trendUp: true,
-    },
-    {
-      title: "Active Jobs",
-      value: dashboardData?.stats?.activeJobs || 0,
-      icon: Briefcase,
-      color: "from-blue-500 to-indigo-600",
-      iconColor: "text-white",
-      trend: "0%",
-      trendUp: true,
-    },
-    {
-      title: "Pending Requests",
-      value: dashboardData?.stats?.pendingRequests || 0,
-      icon: Clock,
-      color: "from-orange-500 to-amber-600",
-      iconColor: "text-white",
-      trend: "+2",
-      trendUp: true,
-    },
-    {
-      title: "Rating",
-      value: dashboardData?.stats?.rating || 0,
-      icon: Star,
-      color: "from-yellow-500 to-amber-500",
-      iconColor: "text-white",
-      trend: "+0.2",
-      trendUp: true,
-    },
-  ];
+  const getStats = () => {
+    if (!dashboardData) return [];
 
-  const stats = dynamicStats;
+    if (userRole === "user") {
+      return [
+        {
+          title: "Total Spent",
+          value: `$${dashboardData?.stats?.totalSpent || 0}`,
+          icon: DollarSign,
+          color: "from-rose-500 to-pink-600",
+          iconColor: "text-white",
+          trend: "Lifetime",
+          trendUp: true,
+        },
+        {
+          title: "Active Bookings",
+          value: dashboardData?.stats?.activeBookings || 0,
+          icon: Briefcase,
+          color: "from-blue-500 to-indigo-600",
+          iconColor: "text-white",
+          trend: "Current",
+          trendUp: true,
+        },
+      ];
+    }
+
+    // Admin Stats
+    return [
+      {
+        title: "Total Earnings",
+        value: `$${dashboardData?.stats?.totalEarnings || 0}`,
+        icon: DollarSign,
+        color: "from-rose-500 to-pink-600",
+        iconColor: "text-white",
+        trend: "+18%",
+        trendUp: true,
+      },
+      {
+        title: "Active Jobs",
+        value: dashboardData?.stats?.activeJobs || 0,
+        icon: Briefcase,
+        color: "from-blue-500 to-indigo-600",
+        iconColor: "text-white",
+        trend: "0%",
+        trendUp: true,
+      },
+      {
+        title: "Pending Requests",
+        value: dashboardData?.stats?.pendingRequests || 0,
+        icon: Clock,
+        color: "from-orange-500 to-amber-600",
+        iconColor: "text-white",
+        trend: "+2",
+        trendUp: true,
+      },
+      {
+        title: "Rating",
+        value: dashboardData?.stats?.rating || 0,
+        icon: Star,
+        color: "from-yellow-500 to-amber-500",
+        iconColor: "text-white",
+        trend: "+0.2",
+        trendUp: true,
+      },
+    ];
+  };
+
+  const stats = getStats();
 
   const serviceListData = (dashboardData?.recentServiceBookings || []).map(
     (item) => ({
@@ -151,7 +190,7 @@ const OverviewContent = () => {
   // ── Chart Data ───────────────────────────────────────────
   const chartData = (dashboardData?.chartData || []).map((d) => ({
     name: d.name,
-    amount: d.revenue,
+    amount: d.revenue || d.amount || 0,
   }));
   const pieData = dashboardData?.pieData || [];
 
@@ -280,13 +319,13 @@ const OverviewContent = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className={`grid grid-cols-1 ${userRole === 'admin' ? 'lg:grid-cols-3' : 'lg:grid-cols-1'} gap-8`}>
         {/* Area Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="lg:col-span-2 rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5 p-8"
+          className={`${userRole === 'admin' ? 'lg:col-span-2' : ''} rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5 p-8`}
         >
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -352,7 +391,8 @@ const OverviewContent = () => {
           </div>
         </motion.div>
 
-        {/* Pie Chart */}
+        {/* Pie Chart - Only for Admin */}
+        {userRole === "admin" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -360,7 +400,7 @@ const OverviewContent = () => {
           className="rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl shadow-xl shadow-rose-500/5 p-8"
         >
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">
-            {userRole === "user" ? "Service Distribution" : "Job Types"}
+            Job Types
           </h3>
           <div className="h-[300px] w-full relative">
             <ResponsiveContainer width="100%" height="100%">
@@ -417,6 +457,7 @@ const OverviewContent = () => {
             </div>
           </div>
         </motion.div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -603,6 +644,7 @@ const OverviewContent = () => {
         </motion.div>
       </div>
 
+      {userRole === "admin" && (
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Recent Activity – clean timeline style */}
         <motion.div
@@ -730,6 +772,7 @@ const OverviewContent = () => {
           </div>
         </motion.div>
       </div>
+      )}
     </div>
   );
 };
