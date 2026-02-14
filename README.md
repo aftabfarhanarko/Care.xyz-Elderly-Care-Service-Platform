@@ -16,7 +16,7 @@ Care.xyz is developed using **React and Next.js (JavaScript)** with a scalable a
 
 The ultimate vision of Care.xyz is to make caregiving **simple, dependable, and stress-free**, empowering families to focus on what truly matters—caring for their loved ones with confidence and peace of mind.
 
----
+-----------------------------------------
 
 ## 🎯 Project Objective
 
@@ -29,7 +29,7 @@ The main objective of this project is to make caregiving:
 
 Users can book services based on **duration, location, and service type** with transparent pricing and booking status tracking.
 
----
+-------------------------
 
 ## 🛠️ Technology Stack
 
